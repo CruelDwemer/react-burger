@@ -1,0 +1,10 @@
+.buttonWrapper {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 500px;
+}
+
+.profileButtonWrapper {
+	justify-content: flex-end;
+}
