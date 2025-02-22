@@ -1,1 +1,1 @@
-export { default } from './ingredient';
+export { default } from '../ingredients-block/ingredient';

@@ -1,0 +1,41 @@
+.container {
+	composes: ml-4 pt-25 from global;
+	position: relative;
+	width: 600px;
+	box-sizing: border-box;
+	max-height: 912px;
+	box-sizing: border-box;
+}
+
+.top {
+	composes: ml-8 from global;
+}
+
+.bottom {
+	composes: ml-8 from global;
+}
+
+.items {
+	max-height: 400px;
+	overflow-y: scroll;
+	scrollbar-color: #8585AD #2F2F37;
+	scrollbar-width: thin;
+}
+
+.result {
+	composes: mt-10 from global;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+}
+
+.price {
+	composes: mr-10 from global;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.priceCount {
+	composes: text text_type_digits-medium mr-2 from global;
+}

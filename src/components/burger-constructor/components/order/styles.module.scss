@@ -1,0 +1,30 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	box-sizing: border-box;
+	padding: 120px;
+}
+
+.orderId {
+	composes: text text_type_digits-large from global;
+	text-shadow: 0 4px 32px rgba(51, 51, 255, 0.5);
+}
+
+.idText {
+	composes: text text_type_main-medium  mt-8 from global;
+}
+
+.image {
+	width: 120px;
+	height: 120px;
+	margin: 60px 0;
+}
+
+.textCooking {
+	composes: text text_type_main-default from global;
+}
+
+.textWait {
+	composes: text text_type_main-default text_color_inactive mt-2 from global;
+}
