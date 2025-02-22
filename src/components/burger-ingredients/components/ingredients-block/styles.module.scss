@@ -1,0 +1,13 @@
+@import '../ingredient/style.module';
+@import '../../../../app/app.module';
+
+.content {
+	display: grid;
+	grid-template-columns: repeat(2, calc($ingredient-width));
+	grid-template-rows: $ingredient-height;
+	grid-column-gap: $spacing * 6;
+}
+
+.header {
+	composes: text text_type_main-medium mt-10 from global;
+}

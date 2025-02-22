@@ -1,0 +1,26 @@
+@import '../../app/app.module';
+
+.header {
+	height: 22 * $spacing;
+	background-color: $light-grey;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	padding: 0 4 * $spacing;
+}
+
+.buttonWrapper {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 500px;
+}
+
+.profileButtonWrapper {
+	justify-content: flex-end;
+}
+
+.logo {
+	margin: 0 10 * $spacing
+}

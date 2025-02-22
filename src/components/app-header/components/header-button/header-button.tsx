@@ -7,16 +7,17 @@ import { TIconProps } from '@ya.praktikum/react-developer-burger-ui-components/d
 interface Props {
 	text: string;
 	icon: ReactElement<TIconProps, any>;
+	active?: boolean;
 }
 
-const HeaderButton: FC<Props> = ({ icon, text }) => {
+const HeaderButton: FC<Props> = ({ icon, text, active = false }) => {
 	const iconEl = React.cloneElement(
 		icon as DetailedReactHTMLElement<
 			{ className: string; type: string },
 			HTMLElement
 		>,
 		{
-			type: 'secondary',
+			type: active ? 'primary' : 'secondary',
 			className: styles.icon,
 		}
 	);
@@ -25,7 +26,7 @@ const HeaderButton: FC<Props> = ({ icon, text }) => {
 			htmlType='button'
 			type='secondary'
 			color='#8585AD'
-			className={styles.button}>
+			className={`${styles.button} ${active ? styles.buttonActive : ''}`}>
 			{iconEl} {text}
 		</Button>
 	);
