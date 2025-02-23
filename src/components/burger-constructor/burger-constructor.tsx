@@ -7,7 +7,7 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { DataInterface, TAB } from '../burger-ingredients/types';
 import BurgerConstructorItem from './components/burger-constructor-item';
-import Order from './components/order';
+import OrderDetails from './components/order-details';
 import Modal from '../modal';
 import { useState } from 'react';
 
@@ -28,7 +28,7 @@ const BurgerConstructor = ({ data }: Props) => {
 			{
 				openOrderModal &&
 				<Modal closeModal={hideOrderModal}>
-					<Order orderId={'034536'} />
+					<OrderDetails orderId={'034536'} />
 				</Modal>
 			}
 			<div className={styles.top}>

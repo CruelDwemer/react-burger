@@ -6,7 +6,7 @@ interface Props {
 	orderId: string;
 }
 
-const Order = ({ orderId }: Props) => (
+const OrderDetails = ({ orderId }: Props) => (
 	<div className={styles.container}>
 		<p className={styles.orderId}>{orderId}</p>
 		<p className={styles.idText}>идентификатор заказа</p>
@@ -22,4 +22,4 @@ const Order = ({ orderId }: Props) => (
 	</div>
 );
 
-export default Order;
+export default OrderDetails;
