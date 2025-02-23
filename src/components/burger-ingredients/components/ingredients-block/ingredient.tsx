@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styles from '../ingredient/style.module.scss';
+import styles from './styles.module.scss';
 import {
 	Counter,
 	CurrencyIcon,
@@ -11,10 +11,8 @@ interface Props extends DataInterface {
 }
 
 const Ingredient = ({ name, image, price, onClick }: Props) => (
-	<div
-		className={styles.ingredient}
-		onClick={onClick}
-	>
+	// eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
+	<div className={styles.ingredient} onClick={onClick}>
 		<Counter count={1} size='default' extraClass={styles.counter} />
 
 		<img src={image} alt={name} className={styles.image} />

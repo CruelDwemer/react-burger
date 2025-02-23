@@ -14,7 +14,7 @@ const IngredientsBlock = ({ header, data, onClick }: Props) => (
 		<h2 className={styles.header}>{header}</h2>
 		<div className={styles.content}>
 			{data.map((item) => (
-				<Ingredient key={item._id} {...item} onClick={(onClick.bind(null, item))} />
+				<Ingredient key={item._id} {...item} onClick={onClick.bind(null, item)} />
 			))}
 		</div>
 	</>

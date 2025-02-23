@@ -3,6 +3,8 @@ import styles from './styles.module.scss';
 import InfoBlock from './info-block';
 import { DataInterface } from '../../types';
 
+type Props = DataInterface;
+
 const IngredientDetails = ({
 	image,
 	name,
@@ -10,7 +12,7 @@ const IngredientDetails = ({
 	calories,
 	carbohydrates,
 	proteins,
-}: DataInterface) => {
+}: Props) => {
 	return (
 		<div className={styles.ingredient}>
 			<h2 className={styles.header}>Детали ингредиента</h2>

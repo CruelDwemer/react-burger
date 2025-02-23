@@ -5,11 +5,11 @@ import {
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { DataInterface } from '../burger-ingredients/types';
+import { DataInterface, TAB } from '../burger-ingredients/types';
 import BurgerConstructorItem from './components/burger-constructor-item';
 import Order from './components/order';
 import Modal from '../modal';
-import {useState} from 'react';
+import { useState } from 'react';
 
 interface Props {
 	data: DataInterface[];
@@ -17,7 +17,7 @@ interface Props {
 
 const BurgerConstructor = ({ data }: Props) => {
 	const bun = data[0];
-	const constructorData = data.filter((el) => el.type !== 'bun').slice(0, 6);
+	const constructorData = data.filter((el) => el.type !== TAB.BUN).slice(0, 6);
 
 	const [openOrderModal, setOpenOrderModal] = useState<boolean>(false);
 	const showOrderModal = setOpenOrderModal.bind(null, true);
