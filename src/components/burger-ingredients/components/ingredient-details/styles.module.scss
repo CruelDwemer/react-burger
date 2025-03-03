@@ -1,0 +1,51 @@
+.ingredient {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	padding: 40px;
+}
+
+.header {
+	composes: text text_type_main-large from global;
+	align-self: flex-start;
+}
+
+.subheader {
+	composes: text text_type_main-medium mt-4 from global;
+}
+
+.image {
+	width: 480px;
+	height: 240px;
+}
+
+.consist {
+	composes: mt-8 from global;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	width: 516px;
+	height: 56px;
+}
+
+.block {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	width: 120px;
+	height: 56px;
+}
+
+.label {
+	composes: text text_type_main-default text_color_inactive from global;
+	text-wrap: nowrap;
+}
+
+.value {
+	composes: text text_type_digits-default text_color_inactive from global;
+}

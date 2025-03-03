@@ -1,0 +1,9 @@
+$spacing: 4px;
+$light-grey: #242424;
+
+.main {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	gap: 10 * $spacing;
+}

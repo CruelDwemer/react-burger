@@ -1,0 +1,52 @@
+@import '../../../app/app.module';
+
+$ingredient-width: 272px;
+$ingredient-height: 258px;
+
+.ingredient {
+	composes: mt-8 from global;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
+	width: $ingredient-width;
+	height: $ingredient-height;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+
+.counter {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.image {
+	width: 240px;
+	height: 120px;
+}
+
+.priceData {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.text {
+	composes: text text_type_digits-default mr-2 mt-1 mb-1 from global;
+}
+
+.subheader {
+	composes: text text_type_main-default from global;
+}
+
+.content {
+	display: grid;
+	grid-template-columns: repeat(2, calc($ingredient-width));
+	grid-template-rows: $ingredient-height;
+	grid-column-gap: $spacing * 6;
+}
+
+.header {
+	composes: text text_type_main-medium mt-10 from global;
+}
