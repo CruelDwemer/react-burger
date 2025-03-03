@@ -5,19 +5,18 @@ import {
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { DataInterface, TAB } from '../burger-ingredients/types';
+import { TAB } from '../burger-ingredients/types';
 import BurgerConstructorItem from './components/burger-constructor-item';
 import OrderDetails from './components/order-details';
 import Modal from '../modal';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Store } from '@services/index';
 
-interface Props {
-	data: DataInterface[];
-}
-
-const BurgerConstructor = ({ data }: Props) => {
-	const bun = data[0];
-	const constructorData = data.filter((el) => el.type !== TAB.BUN).slice(0, 6);
+const BurgerConstructor = () => {
+	const { ingredients } = useSelector((state: Store) => state.ingredients);
+	const bun = ingredients[0];
+	const constructorData = ingredients.filter((el) => el.type !== TAB.BUN).slice(0, 6);
 
 	const [openOrderModal, setOpenOrderModal] = useState<boolean>(false);
 	const showOrderModal = setOpenOrderModal.bind(null, true);

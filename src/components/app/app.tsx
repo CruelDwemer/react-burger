@@ -1,37 +1,42 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import AppHeader from '../app-header';
 import BurgerIngredients from '../burger-ingredients';
 import BurgerConstructor from '../burger-constructor';
 import styles from './app.module.scss';
-import { DataInterface } from '../burger-ingredients/types';
-import { getIngredients } from '../../api/get-ingredients';
+import { Provider, useDispatch } from 'react-redux';
+import { configureStore, AnyAction } from '@reduxjs/toolkit';
+import rootReducer, { getIngredientsQuery } from '../../services';
 
 const App = () => {
-	const [ingredients, setIngredients] = useState<DataInterface[]>([]);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
-		const fetchIngredients = async () => {
-			try {
-				const result = await getIngredients();
-				setIngredients(result || []);
-			} catch (error) {
-				console.log(error);
-			}
-		};
-
-		fetchIngredients();
-	}, []);
+		dispatch(getIngredientsQuery() as unknown as AnyAction);
+	}, [dispatch]);
 
 	return (
 		<>
 			<AppHeader />
 			<main className={styles.main}>
-				<BurgerIngredients data={ingredients as DataInterface[]} />
-				<BurgerConstructor data={ingredients as DataInterface[]} />
+				<BurgerIngredients />
+				<BurgerConstructor />
 			</main>
 		</>
 	);
 };
 
-export default App;
+const AppWithProvider = () => {
+	const store = configureStore({
+		reducer: rootReducer,
+		devTools: true,
+	});
+
+	return (
+		<Provider store={store}>
+			<App />
+		</Provider>
+	);
+};
+
+export default AppWithProvider;

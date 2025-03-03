@@ -4,7 +4,7 @@ import {
 	Counter,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { DataInterface } from '../../types';
+import { DataInterface } from '../../../../types';
 
 interface Props extends DataInterface {
 	onClick: () => void;

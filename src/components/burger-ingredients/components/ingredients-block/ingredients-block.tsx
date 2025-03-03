@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Ingredient from './ingredient';
-import { DataInterface } from '../../types';
+import { DataInterface } from '../../../../types';
 import styles from './styles.module.scss';
 
 interface Props {

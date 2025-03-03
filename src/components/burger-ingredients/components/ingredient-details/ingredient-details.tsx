@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styles from './styles.module.scss';
 import InfoBlock from './info-block';
-import { DataInterface } from '../../types';
+import { DataInterface } from '../../../../types';
 
 type Props = DataInterface;
 
