@@ -1,6 +1,6 @@
 import { getIngredients } from '../api/get-ingredients';
-import {createSlice, createAsyncThunk, CreateSliceOptions, Slice, Reducer, createAction } from '@reduxjs/toolkit';
-import {DataInterface} from '../types';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { DataInterface } from '../types';
 
 const getIngredientsQuery = createAsyncThunk(
 	'ingredients/getIngredients',
@@ -16,8 +16,6 @@ const getIngredientsQuery = createAsyncThunk(
 interface State {
 	ingredients: DataInterface[];
 }
-
-// const fulfilled = createAction<DataInterface[]>(getIngredientsThunk.fulfilled)
 
 const ingredientsSlice = createSlice({
 	name: 'ingredients',

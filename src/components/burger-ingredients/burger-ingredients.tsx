@@ -37,7 +37,6 @@ const BurgerIngredients = () => {
 	const containerRef = useRef<HTMLDivElement | null>(null);
 
 	const selectTab = (value: TAB) => {
-		setSelectedTab(value);
 		const sections = containerRef?.current?.querySelectorAll('.section') || [];
 		if(sections) {
 			const target = Array.from(sections).find(section => section.getAttribute('data-type') === value);

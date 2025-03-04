@@ -10,20 +10,45 @@ import BurgerConstructorItem from './components/burger-constructor-item';
 import OrderDetails from './components/order-details';
 import Modal from '../modal';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Store } from '@services/index';
+import { useSelector, useDispatch } from 'react-redux';
+// import { Store, addIngredient } from '@services/index';
+import { DataInterface } from '../../types';
+import { useDrop } from "react-dnd";
+import { addIngredient, Store } from '../../services/index';
+import classnames from '@utils/classnames';
 
 const BurgerConstructor = () => {
 	const { ingredients } = useSelector((state: Store) => state.ingredients);
-	const bun = ingredients[0];
-	const constructorData = ingredients.filter((el) => el.type !== TAB.BUN).slice(0, 6);
+	const {
+		burgerList,
+		bun,
+		bunSelected
+	} = useSelector((state: Store) => state.burger);
+
+	const dispatch = useDispatch();
+
+	const [ , dropTarget ] = useDrop({
+		accept: "ingredient",
+		drop(item: any) {
+			console.log('item', item)
+			const itemToStore = ingredients.find(element => element._id === item.dataId)
+			dispatch(addIngredient(itemToStore));
+		},
+	});
+
+	// let bun: DataInterface | null = ingredients[0];
+	// const constructorData = ingredients.filter((el) => el.type !== TAB.BUN).slice(0, 6);
+
+	// bun = null;
+	// const burgerListIds = burgerList.map(({ _id }) => _id);
+	// let constructorData: DataInterface[] = ingredients.filter(item => burgerListIds.includes(item._id));
 
 	const [openOrderModal, setOpenOrderModal] = useState<boolean>(false);
 	const showOrderModal = setOpenOrderModal.bind(null, true);
 	const hideOrderModal = setOpenOrderModal.bind(null, false);
 
 	return (
-		<section className={styles.container}>
+		<section className={styles.container} ref={dropTarget}>
 			{
 				openOrderModal &&
 				<Modal closeModal={hideOrderModal}>
@@ -31,41 +56,24 @@ const BurgerConstructor = () => {
 				</Modal>
 			}
 			<div className={styles.top}>
-				{bun && (
-					<ConstructorElement
-						text={`${bun.name}\n (верх)`}
-						price={bun.price}
-						thumbnail={bun.image_mobile}
-						extraClass='mb-4'
-						isLocked={true}
-						type='top'
-					/>
-				)}
+				<Bun bun={bun} type='top' />
 			</div>
 			<ul className={styles.items}>
-				{constructorData &&
-					constructorData.map((item, index) => (
+				{burgerList.length ?
+					burgerList.map((item, index) => (
 						<BurgerConstructorItem
 							index={index}
 							text={item.name}
 							price={item.price}
 							thumbnail={item.image_mobile}
-							length={constructorData.length}
 							key={item._id}
+							isLast={index === burgerList.length - 1}
 						/>
-					))}
+					)) : <ElementPlaceHolder/>
+				}
 			</ul>
 			<div className={styles.bottom}>
-				{bun && (
-					<ConstructorElement
-						text={`${bun.name} \n (низ)`}
-						price={bun.price}
-						thumbnail={bun.image_mobile}
-						isLocked={true}
-						extraClass='mt-4'
-						type='bottom'
-					/>
-				)}
+				<Bun bun={bun} type='bottom' />
 			</div>
 			<div className={styles.result}>
 				<div className={styles.price}>
@@ -83,6 +91,39 @@ const BurgerConstructor = () => {
 			</div>
 		</section>
 	);
+};
+
+interface BunProps {
+	bun: DataInterface | null;
+	type: 'bottom' | 'top';
+}
+
+const TopBunPlaceHolder = () => <div className={classnames(styles.constructorElement, styles.constructorElementPosTop)}>Добавьте булку</div>
+const BottomBunPlaceHolder = () => <div className={classnames(styles.constructorElement, styles.constructorElementPosBottom)}>Добавьте булку</div>
+const ElementPlaceHolder = () => <div className={styles.constructorElement}>Добавьте ингредиент</div>
+
+const Bun = ({ bun, type }: BunProps) => {
+	const [ , dropTarget ] = useDrop({
+		accept: "inside",
+		drop: item => ({ data: type })
+	});
+
+	if(!bun) {
+		return type === 'top' ? <TopBunPlaceHolder/> : <BottomBunPlaceHolder/>
+	}
+
+	return (
+		<div ref={dropTarget}>
+			<ConstructorElement
+				text={`${bun!.name} \n ${type === 'top' ? '(верх)' : '(низ)'}`}
+				price={bun!.price}
+				thumbnail={bun!.image_mobile}
+				isLocked={true}
+				extraClass='mt-4'
+				type={type}
+			/>
+		</div>
+	)
 };
 
 export default BurgerConstructor;
