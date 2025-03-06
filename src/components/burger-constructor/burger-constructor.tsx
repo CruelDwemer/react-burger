@@ -5,25 +5,25 @@ import {
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { INGREDIENT_TYPE } from '../burger-ingredients/types';
 import BurgerConstructorItem from './components/burger-constructor-item';
 import OrderDetails from './components/order-details';
 import Modal from '../modal';
-import { useState } from 'react';
+import { SyntheticEvent, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-// import { Store, addIngredient } from '@services/index';
 import { DataInterface } from '../../types';
 import { useDrop } from "react-dnd";
 import { addIngredient, Store } from '../../services/index';
 import classnames from '@utils/classnames';
+import { sendOrderInfo, flushState } from '../../services/index';
+import { UnknownAction } from 'redux';
 
 const BurgerConstructor = () => {
 	const { ingredients } = useSelector((state: Store) => state.ingredients);
 	const {
 		burgerList,
-		bun,
-		bunSelected
+		bun
 	} = useSelector((state: Store) => state.burger);
+	const { orderInfo } = useSelector((state: Store) => state.order)
 
 	const dispatch = useDispatch();
 
@@ -35,27 +35,36 @@ const BurgerConstructor = () => {
 		},
 	});
 
-	// let bun: DataInterface | null = ingredients[0];
-	// const constructorData = ingredients.filter((el) => el.type !== TAB.BUN).slice(0, 6);
-
-	// bun = null;
-	// const burgerListIds = burgerList.map(({ _id }) => _id);
-	// let constructorData: DataInterface[] = ingredients.filter(item => burgerListIds.includes(item._id));
-
 	const [openOrderModal, setOpenOrderModal] = useState<boolean>(false);
 	const showOrderModal = setOpenOrderModal.bind(null, true);
 	const hideOrderModal = setOpenOrderModal.bind(null, false);
 
 	const totalCost = burgerList.reduce((acc, item) => (
 		acc + item.price
-	), bun?.price || 0);
+	), bun?.price ? bun.price * 2 : 0);
+
+	const createOrder = useCallback((e: SyntheticEvent) => {
+		e.stopPropagation();
+		showOrderModal();
+		dispatch(sendOrderInfo({
+			ingredients: [bun?._id, ...burgerList.map(({ _id }) => _id)].filter(el => el) as string[]
+		}) as unknown as UnknownAction)
+	}, [bun, burgerList]);
+
+	const closeOrderModal = () => {
+		hideOrderModal();
+		dispatch(flushState())
+	}
+
+	const orderId = orderInfo?.order?.number;
 
 	return (
 		<section className={styles.container} ref={dropTarget}>
 			{
 				openOrderModal &&
-				<Modal closeModal={hideOrderModal}>
-					<OrderDetails orderId={'034536'} />
+				orderId &&
+				<Modal closeModal={closeOrderModal}>
+					<OrderDetails orderId={orderId} />
 				</Modal>
 			}
 			<div className={styles.top}>
@@ -88,7 +97,7 @@ const BurgerConstructor = () => {
 					type='primary'
 					size='large'
 					htmlType='button'
-					onClick={showOrderModal}
+					onClick={createOrder}
 				>
 					Оформить заказ
 				</Button>

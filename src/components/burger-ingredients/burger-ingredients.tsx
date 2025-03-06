@@ -7,8 +7,12 @@ import { DataInterface } from '../../types';
 import IngredientsBlock from './components/ingredients-block';
 import Modal from '../modal';
 import IngredientDetails from './components/ingredient-details';
-import { useSelector } from 'react-redux';
-import { Store } from '../../services/index';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+	Store,
+	setIngredientInfo,
+	removeIngredientInfo,
+} from '../../services/index';
 
 const tabs: ITab[] = [
 	{
@@ -26,23 +30,31 @@ const tabs: ITab[] = [
 ];
 
 const BurgerIngredients = () => {
-	const [selectedTab, setSelectedTab] = useState<INGREDIENT_TYPE>(INGREDIENT_TYPE.BUN);
+	const [selectedTab, setSelectedTab] = useState<INGREDIENT_TYPE>(
+		INGREDIENT_TYPE.BUN
+	);
 
-	const [selectedIngredient, setSelectedIngredient] =
-		useState<DataInterface | null>(null);
-	const closeModal = setSelectedIngredient.bind(null, null);
-	const selectIngredient = (ingredient: DataInterface) =>
-		setSelectedIngredient(ingredient);
+	const { selectedIngredient } = useSelector(
+		(state: Store) => state.ingredientInfo
+	);
+
+	const dispatch = useDispatch();
+
+	const closeModal = () => {
+		dispatch(removeIngredientInfo());
+	};
+	const selectIngredient = (ingredient: DataInterface) => {
+		dispatch(setIngredientInfo(ingredient));
+	};
 
 	const containerRef = useRef<HTMLDivElement | null>(null);
 
 	const selectTab = (value: INGREDIENT_TYPE) => {
 		const sections = containerRef?.current?.querySelectorAll('.section') || [];
-		if(sections) {
+		if (sections) {
 			const target = Array.from(sections).find(section => section.getAttribute('data-type') === value);
-			if(target) {
+			if (target) {
 				const { top } = target.getBoundingClientRect();
-				console.log(value, top)
 				target.scrollIntoView({ behavior: 'smooth' });
 			}
 		}
@@ -58,16 +70,18 @@ const BurgerIngredients = () => {
 				index = i;
 			}
 		});
-		setSelectedTab(sections[index].getAttribute('data-type') as INGREDIENT_TYPE);
+		setSelectedTab(
+			sections[index].getAttribute('data-type') as INGREDIENT_TYPE
+		);
 	};
 
 	useEffect(() => {
 		const container = containerRef.current;
-		if(container) {
+		if (container) {
 			container.addEventListener('scroll', handleScroll);
 			return () => container.removeEventListener('scroll', handleScroll);
 		}
-	}, [])
+	}, []);
 
 	const IngredientTab = ({ value, label }: ITab) => (
 		<Tab
@@ -87,7 +101,7 @@ const BurgerIngredients = () => {
 					<IngredientDetails {...selectedIngredient} />
 				</Modal>
 			)}
-			<section >
+			<section>
 				<h1 className={styles.header}>Соберите бургер</h1>
 				<div className={styles.tabs}>
 					{tabs.map((el, index) => (

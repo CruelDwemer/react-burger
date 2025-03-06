@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { DataInterface } from '../types';
 import { v4 } from 'uuid';
-import {INGREDIENT_TYPE} from '../components/burger-ingredients/types';
+import { INGREDIENT_TYPE } from '../components/burger-ingredients/types';
 
 export interface IngredientsWithKey extends DataInterface {
 	key: string;
@@ -9,22 +9,21 @@ export interface IngredientsWithKey extends DataInterface {
 
 export interface BurgerState {
 	burgerList: IngredientsWithKey[];
-	bunSelected: boolean;
 	bun: DataInterface | null;
 }
 
+const initialState: BurgerState = {
+	burgerList: [],
+	bun: null,
+};
+
 const burgerConstructorSlice = createSlice({
 	name: 'burger',
-	initialState: {
-		burgerList: [],
-		bunSelected: false,
-		bun: null,
-	} as BurgerState,
+	initialState,
 	reducers: {
 		addIngredient: (state, action) => {
 			if (action.payload.type === INGREDIENT_TYPE.BUN) {
 				state.bun = action.payload;
-				state.bunSelected = true;
 			} else {
 				const key = v4();
 				state.burgerList.push({ ...action.payload, key });
@@ -38,25 +37,17 @@ const burgerConstructorSlice = createSlice({
 		sortIngredients: (state, action) => {
 			const { position, index } = action.payload;
 			const copy: Array<DataInterface | string> = [...state.burgerList];
-			console.log("state", state.burgerList);
-			console.log("copy", [...state.burgerList]);
 			const element = copy.splice(index, 1, 'placeholder')[0];
-			console.log("element", state.burgerList);
-			console.log("copy splice 1", [...copy]);
 			copy.splice(position, 0, element);
-			// const filtered =
-			console.log("copy splice 2", [...copy]);
-			console.log("filtered", [...copy.filter(
-				(item) => item !== 'placeholder'
-			)]);
 			state.burgerList = copy.filter(
 				(item) => item !== 'placeholder'
 			) as IngredientsWithKey[];
 		},
+		flushIngredients: () => initialState,
 	},
 });
 
-const { addIngredient, removeIngredient, sortIngredients } =
+const { addIngredient, removeIngredient, sortIngredients, flushIngredients } =
 	burgerConstructorSlice.actions;
 
 export {
@@ -64,4 +55,5 @@ export {
 	addIngredient,
 	removeIngredient,
 	sortIngredients,
+	flushIngredients,
 };

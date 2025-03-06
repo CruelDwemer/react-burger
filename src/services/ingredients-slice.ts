@@ -1,6 +1,10 @@
-import { getIngredients } from '../api/get-ingredients';
+import { getIngredients } from '../api';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { DataInterface } from '../types';
+
+export interface IngredientsState {
+	ingredients: DataInterface[];
+}
 
 const getIngredientsQuery = createAsyncThunk(
 	'ingredients/getIngredients',

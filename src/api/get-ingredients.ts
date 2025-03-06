@@ -9,4 +9,4 @@ const getIngredients = async () => {
 	return result.data;
 };
 
-export { getIngredients };
+export default getIngredients;
