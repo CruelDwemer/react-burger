@@ -52,9 +52,10 @@ const BurgerIngredients = () => {
 	const selectTab = (value: INGREDIENT_TYPE) => {
 		const sections = containerRef?.current?.querySelectorAll('.section') || [];
 		if (sections) {
-			const target = Array.from(sections).find(section => section.getAttribute('data-type') === value);
+			const target = Array.from(sections).find(
+				(section) => section.getAttribute('data-type') === value
+			);
 			if (target) {
-				const { top } = target.getBoundingClientRect();
 				target.scrollIntoView({ behavior: 'smooth' });
 			}
 		}

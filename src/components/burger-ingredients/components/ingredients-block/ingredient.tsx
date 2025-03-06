@@ -28,15 +28,11 @@ const Ingredient = ({ name, image, price, onClick, _id, type }: Props) => {
 	);
 	if (type === INGREDIENT_TYPE.BUN) {
 		if (bun?._id === _id) {
-			count = 1;
+			count = 2;
 		}
 	} else {
 		count = burgerList.filter(({ _id: id }) => id === _id).length;
 	}
-
-	// console.log('burgerList', burgerList);
-	// console.log('bun', bun);
-	// console.log('count', count);
 
 	return (
 		// eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
