@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRef, useState, useEffect } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './styles.module.scss';
-import { ITab, TAB } from './types';
+import { ITab, INGREDIENT_TYPE } from './types';
 import { DataInterface } from '../../types';
 import IngredientsBlock from './components/ingredients-block';
 import Modal from '../modal';
@@ -12,21 +12,21 @@ import { Store } from '../../services/index';
 
 const tabs: ITab[] = [
 	{
-		value: TAB.BUN,
+		value: INGREDIENT_TYPE.BUN,
 		label: 'Булки',
 	},
 	{
-		value: TAB.SAUCE,
+		value: INGREDIENT_TYPE.SAUCE,
 		label: 'Соусы',
 	},
 	{
-		value: TAB.MAIN,
+		value: INGREDIENT_TYPE.MAIN,
 		label: 'Начинки',
 	},
 ];
 
 const BurgerIngredients = () => {
-	const [selectedTab, setSelectedTab] = useState<TAB>(TAB.BUN);
+	const [selectedTab, setSelectedTab] = useState<INGREDIENT_TYPE>(INGREDIENT_TYPE.BUN);
 
 	const [selectedIngredient, setSelectedIngredient] =
 		useState<DataInterface | null>(null);
@@ -36,7 +36,7 @@ const BurgerIngredients = () => {
 
 	const containerRef = useRef<HTMLDivElement | null>(null);
 
-	const selectTab = (value: TAB) => {
+	const selectTab = (value: INGREDIENT_TYPE) => {
 		const sections = containerRef?.current?.querySelectorAll('.section') || [];
 		if(sections) {
 			const target = Array.from(sections).find(section => section.getAttribute('data-type') === value);
@@ -46,7 +46,6 @@ const BurgerIngredients = () => {
 				target.scrollIntoView({ behavior: 'smooth' });
 			}
 		}
-
 	};
 
 	const handleScroll = () => {
@@ -59,7 +58,7 @@ const BurgerIngredients = () => {
 				index = i;
 			}
 		});
-		setSelectedTab(sections[index].getAttribute('data-type') as TAB);
+		setSelectedTab(sections[index].getAttribute('data-type') as INGREDIENT_TYPE);
 	};
 
 	useEffect(() => {

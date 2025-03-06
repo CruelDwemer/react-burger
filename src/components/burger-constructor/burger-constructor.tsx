@@ -5,7 +5,7 @@ import {
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { TAB } from '../burger-ingredients/types';
+import { INGREDIENT_TYPE } from '../burger-ingredients/types';
 import BurgerConstructorItem from './components/burger-constructor-item';
 import OrderDetails from './components/order-details';
 import Modal from '../modal';
@@ -46,6 +46,10 @@ const BurgerConstructor = () => {
 	const showOrderModal = setOpenOrderModal.bind(null, true);
 	const hideOrderModal = setOpenOrderModal.bind(null, false);
 
+	const totalCost = burgerList.reduce((acc, item) => (
+		acc + item.price
+	), bun?.price || 0);
+
 	return (
 		<section className={styles.container} ref={dropTarget}>
 			{
@@ -77,7 +81,7 @@ const BurgerConstructor = () => {
 			</div>
 			<div className={styles.result}>
 				<div className={styles.price}>
-					<p className={styles.priceCount}>610</p>
+					<p className={styles.priceCount}>{totalCost}</p>
 					<CurrencyIcon type='primary' />
 				</div>
 				<Button

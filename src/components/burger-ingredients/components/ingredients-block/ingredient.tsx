@@ -8,6 +8,7 @@ import { DataInterface } from '../../../../types';
 import { useDrag } from 'react-dnd';
 import { useSelector } from 'react-redux';
 import { Store } from '@services/index';
+import { INGREDIENT_TYPE } from '../../types';
 
 interface Props extends DataInterface {
 	onClick: () => void;
@@ -25,12 +26,12 @@ const Ingredient = ({ name, image, price, onClick, _id, type }: Props) => {
 	const { burgerList, bun } = useSelector((store: Store) =>
 		store.burger
 	);
-	if (type === 'bun') {
+	if (type === INGREDIENT_TYPE.BUN) {
 		if (bun?._id === _id) {
 			count = 1;
 		}
 	} else {
-		count = burgerList.filter(({ _id: id}) => id === _id).length;
+		count = burgerList.filter(({ _id: id }) => id === _id).length;
 	}
 
 	// console.log('burgerList', burgerList);

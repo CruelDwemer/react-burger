@@ -2,13 +2,13 @@ import * as React from 'react';
 import Ingredient from './ingredient';
 import { DataInterface } from '../../../../types';
 import styles from './styles.module.scss';
-import {TAB} from '../../types';
+import {INGREDIENT_TYPE} from '../../types';
 
 interface Props {
 	header: string;
 	data: DataInterface[];
 	onClick: (data: DataInterface) => void;
-	type: TAB;
+	type: INGREDIENT_TYPE;
 }
 
 const IngredientsBlock = ({ header, data, onClick, type }: Props) => (

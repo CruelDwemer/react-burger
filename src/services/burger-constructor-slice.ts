@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { DataInterface } from '../types';
 import { v4 } from 'uuid';
+import {INGREDIENT_TYPE} from '../components/burger-ingredients/types';
 
 export interface IngredientsWithKey extends DataInterface {
 	key: string;
@@ -21,7 +22,7 @@ const burgerConstructorSlice = createSlice({
 	} as BurgerState,
 	reducers: {
 		addIngredient: (state, action) => {
-			if (action.payload.type === 'bun') {
+			if (action.payload.type === INGREDIENT_TYPE.BUN) {
 				state.bun = action.payload;
 				state.bunSelected = true;
 			} else {
