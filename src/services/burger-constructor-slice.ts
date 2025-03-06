@@ -36,10 +36,13 @@ const burgerConstructorSlice = createSlice({
 		},
 		sortIngredients: (state, action) => {
 			const { position, index } = action.payload;
-			const copy: Array<DataInterface | string> = [...state.burgerList];
-			const element = copy.splice(index, 1, 'placeholder')[0];
-			copy.splice(position, 0, element);
-			state.burgerList = copy.filter(
+			const ingredients: Array<DataInterface | string> = [...state.burgerList];
+			ingredients.splice(
+				position,
+				0,
+				ingredients.splice(index, 1, 'placeholder')[0]
+			);
+			state.burgerList = ingredients.filter(
 				(item) => item !== 'placeholder'
 			) as IngredientsWithKey[];
 		},

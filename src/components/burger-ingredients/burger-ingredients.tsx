@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useRef, useState, useEffect, UIEventHandler} from 'react';
+import { useRef, useState, UIEventHandler } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './styles.module.scss';
 import { ITab, INGREDIENT_TYPE } from './types';
@@ -108,7 +108,9 @@ const BurgerIngredients = () => {
 					ref={containerRef}
 					onScroll={handleScroll}>
 					{tabs.map((tab, index) => {
-						const filteredData = ingredients.filter(({ type }) => type === tab.value);
+						const filteredData = ingredients.filter(
+							({ type }) => type === tab.value
+						);
 						return (
 							<IngredientsBlock
 								key={index}
