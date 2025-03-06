@@ -6,26 +6,43 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { DataInterface } from '../../../../types';
 import { useDrag } from 'react-dnd';
+import { useSelector } from 'react-redux';
+import { Store } from '@services/index';
 
 interface Props extends DataInterface {
 	onClick: () => void;
 }
 
-const Ingredient = ({ name, image, price, onClick, _id }: Props) => {
-	const [{ isDrag }, dragRef] = useDrag({
+const Ingredient = ({ name, image, price, onClick, _id, type }: Props) => {
+	const [, dragRef] = useDrag({
 		type: 'ingredient',
 		item: { dataId: _id },
 		collect: (monitor) => ({
 			isDrag: monitor.isDragging(),
 		}),
 	});
+	let count = 0;
+	const { burgerList, bun } = useSelector((store: Store) =>
+		store.burger
+	);
+	if (type === 'bun') {
+		if (bun?._id === _id) {
+			count = 1;
+		}
+	} else {
+		count = burgerList.filter(({ _id: id}) => id === _id).length;
+	}
 
-	// console.log('isDrag', isDrag)
+	// console.log('burgerList', burgerList);
+	// console.log('bun', bun);
+	// console.log('count', count);
 
 	return (
 		// eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions
 		<div className={styles.ingredient} onClick={onClick}>
-			<Counter count={1} size='default' extraClass={styles.counter} />
+			{!!count && (
+				<Counter count={count} size='default' extraClass={styles.counter} />
+			)}
 
 			<img src={image} alt={name} className={styles.image} ref={dragRef} />
 			<div className={styles.priceData}>

@@ -30,7 +30,6 @@ const BurgerConstructor = () => {
 	const [ , dropTarget ] = useDrop({
 		accept: "ingredient",
 		drop(item: any) {
-			console.log('item', item)
 			const itemToStore = ingredients.find(element => element._id === item.dataId)
 			dispatch(addIngredient(itemToStore));
 		},
@@ -66,7 +65,8 @@ const BurgerConstructor = () => {
 							text={item.name}
 							price={item.price}
 							thumbnail={item.image_mobile}
-							key={item._id}
+							key={item.key}
+							dataKey={item.key}
 							isLast={index === burgerList.length - 1}
 						/>
 					)) : <ElementPlaceHolder/>

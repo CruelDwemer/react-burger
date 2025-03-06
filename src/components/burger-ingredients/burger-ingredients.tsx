@@ -49,7 +49,7 @@ const BurgerIngredients = () => {
 
 	};
 
-	function handleScroll() {
+	const handleScroll = () => {
 		const sections = containerRef?.current?.querySelectorAll('.section') || [];
 		let index = 0;
 
@@ -60,7 +60,7 @@ const BurgerIngredients = () => {
 			}
 		});
 		setSelectedTab(sections[index].getAttribute('data-type') as TAB);
-	}
+	};
 
 	useEffect(() => {
 		const container = containerRef.current;

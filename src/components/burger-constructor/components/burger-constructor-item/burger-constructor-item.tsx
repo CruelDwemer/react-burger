@@ -2,8 +2,9 @@ import * as React from 'react';
 import styles from './styles.module.scss';
 import {ConstructorElement, DragIcon,} from '@ya.praktikum/react-developer-burger-ui-components';
 import {useDispatch} from 'react-redux';
-import {DropTargetMonitor, useDrag, useDrop} from 'react-dnd';
-import {sortIngredients} from '../../../../services';
+import {DropTargetMonitor, useDrag, useDrop, XYCoord} from 'react-dnd';
+import {sortIngredients, removeIngredient} from '../../../../services';
+import classnames from '@utils/classnames';
 
 interface Props {
 	index: number;
@@ -11,11 +12,11 @@ interface Props {
 	price: number;
 	thumbnail: string;
 	isLast: boolean;
+	dataKey: string;
 }
 
-interface OffsetDataInterface {
-	x: number;
-	y: number;
+interface DropResult {
+	data: 'top' | 'bottom' | XYCoord;
 }
 
 const BurgerConstructorItem = ({
@@ -24,6 +25,7 @@ const BurgerConstructorItem = ({
 	price,
 	thumbnail,
 	isLast,
+	dataKey,
 }: Props) => {
 	const conditionalPadding = 16;
 	const dispatch = useDispatch();
@@ -36,13 +38,13 @@ const BurgerConstructorItem = ({
 			source: monitor.getInitialSourceClientOffset(),
 		}),
 		end: (item, monitor) => {
-			const dropResult: any = monitor.getDropResult();
+			const dropResult: DropResult | null = monitor.getDropResult();
 
 			if (dropResult && typeof dropResult.data === 'string') {
 				handleOverBun(dropResult.data, index);
 			} else if (dropResult) {
-				const position = handleDrop(source, dropResult.data, index);
-				dispatch(sortIngredients({ position, index }))
+				const position = handleDrop(source, dropResult.data as XYCoord, index);
+				dispatch(sortIngredients({ position, index }));
 			}
 		},
 	});
@@ -52,11 +54,21 @@ const BurgerConstructorItem = ({
 		dispatch(sortIngredients({ position, index }));
 	}
 
-	const handleDrop = (source: any, target: any, index: number) => {
+	const handleDrop = (
+		source: XYCoord | null,
+		target: XYCoord,
+		index: number
+	) => {
+		console.log('burgerConstructorItem handleDrop source: any, target: any', source, target, index);
 		const element = document.querySelector<HTMLElement>(
-			`.constructor-list-item:nth-child(${index + 1})`
+			`.constructorItem:nth-child(${index + 1})`
 		);
-		if (!element) {
+		if (
+			!element ||
+			!source ||
+			typeof source.x === 'undefined' ||
+			typeof source.y === 'undefined'
+		) {
 			return;
 		}
 		const elementHeight = element!.offsetHeight + conditionalPadding;
@@ -79,14 +91,20 @@ const BurgerConstructorItem = ({
 				offsetData.y = currentOffset.y;
 			}
 		},
-		drop: (): { data: OffsetDataInterface; index: number } => ({
+		drop: (): { data: XYCoord; index: number } => ({
 			data: offsetData,
 			index,
 		}),
 	});
 
+	const deleteItem = () => {
+		dispatch(removeIngredient(dataKey));
+	};
+
 	return (
-		<li className={styles.container} ref={dropTarget}>
+		<li
+			className={classnames(styles.container, 'constructorItem')}
+			ref={dropTarget}>
 			<div className={styles.icon} ref={dragRef}>
 				<DragIcon type='primary' />
 			</div>
@@ -96,6 +114,7 @@ const BurgerConstructorItem = ({
 				thumbnail={thumbnail}
 				key={index}
 				extraClass={!isLast ? 'mb-4' : ''}
+				handleClose={deleteItem}
 			/>
 		</li>
 	);
