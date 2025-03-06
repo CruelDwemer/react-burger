@@ -59,7 +59,6 @@ const BurgerConstructorItem = ({
 		target: XYCoord,
 		index: number
 	) => {
-		console.log('burgerConstructorItem handleDrop source: any, target: any', source, target, index);
 		const element = document.querySelector<HTMLElement>(
 			`.constructorItem:nth-child(${index + 1})`
 		);

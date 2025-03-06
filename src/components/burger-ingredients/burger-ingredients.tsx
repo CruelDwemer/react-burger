@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useRef, useState, useEffect } from 'react';
+import {useRef, useState, useEffect, UIEventHandler} from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './styles.module.scss';
 import { ITab, INGREDIENT_TYPE } from './types';
@@ -61,28 +61,22 @@ const BurgerIngredients = () => {
 		}
 	};
 
-	const handleScroll = () => {
-		const sections = containerRef?.current?.querySelectorAll('.section') || [];
-		let index = 0;
+	const handleScroll: UIEventHandler<HTMLDivElement> = ({ target }) => {
+		if (target instanceof HTMLDivElement) {
+			const sections = target.querySelectorAll('.section') || [];
+			let index = 0;
 
-		sections.forEach((section, i) => {
-			const { top } = section.getBoundingClientRect();
-			if (top <= 300) {
-				index = i;
-			}
-		});
-		setSelectedTab(
-			sections[index].getAttribute('data-type') as INGREDIENT_TYPE
-		);
-	};
-
-	useEffect(() => {
-		const container = containerRef.current;
-		if (container) {
-			container.addEventListener('scroll', handleScroll);
-			return () => container.removeEventListener('scroll', handleScroll);
+			sections.forEach((section, i) => {
+				const { top } = section.getBoundingClientRect();
+				if (top <= 300) {
+					index = i;
+				}
+			});
+			setSelectedTab(
+				sections[index].getAttribute('data-type') as INGREDIENT_TYPE
+			);
 		}
-	}, []);
+	};
 
 	const IngredientTab = ({ value, label }: ITab) => (
 		<Tab
@@ -109,7 +103,10 @@ const BurgerIngredients = () => {
 						<IngredientTab key={index} {...el} />
 					))}
 				</div>
-				<div className={styles.content} ref={containerRef}>
+				<div
+					className={styles.content}
+					ref={containerRef}
+					onScroll={handleScroll}>
 					{tabs.map((tab, index) => {
 						const filteredData = ingredients.filter(({ type }) => type === tab.value);
 						return (

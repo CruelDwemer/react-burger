@@ -47,7 +47,7 @@ const BurgerConstructor = () => {
 		e.stopPropagation();
 		showOrderModal();
 		dispatch(sendOrderInfo({
-			ingredients: [bun?._id, ...burgerList.map(({ _id }) => _id)].filter(el => el) as string[]
+			ingredients: [bun?._id, ...burgerList.map(({ _id }) => _id), bun?._id].filter(el => el) as string[]
 		}) as unknown as UnknownAction)
 	}, [bun, burgerList]);
 
