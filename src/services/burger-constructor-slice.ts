@@ -1,14 +1,14 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { DataInterface } from '../types';
 import { v4 } from 'uuid';
 import { INGREDIENT_TYPE } from '../components/burger-ingredients/types';
 
-export interface IngredientsWithKey extends DataInterface {
+export interface IngredientWithKey extends DataInterface {
 	key: string;
 }
 
 export interface BurgerState {
-	burgerList: IngredientsWithKey[];
+	burgerList: IngredientWithKey[];
 	bun: DataInterface | null;
 }
 
@@ -22,7 +22,7 @@ const burgerConstructorSlice = createSlice({
 	initialState,
 	reducers: {
 		addIngredient: {
-			reducer: (state, action: PayloadAction<IngredientsWithKey>) => {
+			reducer: (state, action: PayloadAction<IngredientWithKey>) => {
 				if (action.payload.type === INGREDIENT_TYPE.BUN) {
 					state.bun = action.payload;
 				} else {
@@ -49,7 +49,7 @@ const burgerConstructorSlice = createSlice({
 			);
 			state.burgerList = ingredients.filter(
 				(item) => item !== 'placeholder'
-			) as IngredientsWithKey[];
+			) as IngredientWithKey[];
 		},
 		flushIngredients: () => initialState,
 	},

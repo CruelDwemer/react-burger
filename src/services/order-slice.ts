@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { sendOrder } from '../api';
+import { sendOrder, SendOrderRequestData } from '../api';
 import { flushIngredients } from './burger-constructor-slice';
 
 interface OrderInfo {
@@ -16,7 +16,7 @@ export interface OrderState {
 
 const sendOrderInfo = createAsyncThunk(
 	'order/sendOrderInfo',
-	async (data: { ingredients: string[] }, { dispatch }) => {
+	async (data: SendOrderRequestData, { dispatch }) => {
 		try {
 			const response = await sendOrder(data);
 			if (response) {
