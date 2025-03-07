@@ -30,8 +30,10 @@ const BurgerConstructor = () => {
 	const [ , dropTarget ] = useDrop({
 		accept: "ingredient",
 		drop(item: any) {
-			const itemToStore = ingredients.find(element => element._id === item.dataId)
-			dispatch(addIngredient(itemToStore));
+			const itemToStore = ingredients.find(element => element._id === item.dataId);
+			if (itemToStore) {
+				dispatch(addIngredient(itemToStore));
+			}
 		},
 	});
 

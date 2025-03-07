@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import { DataInterface } from '../types';
 import { v4 } from 'uuid';
 import { INGREDIENT_TYPE } from '../components/burger-ingredients/types';
@@ -21,13 +21,18 @@ const burgerConstructorSlice = createSlice({
 	name: 'burger',
 	initialState,
 	reducers: {
-		addIngredient: (state, action) => {
-			if (action.payload.type === INGREDIENT_TYPE.BUN) {
-				state.bun = action.payload;
-			} else {
+		addIngredient: {
+			reducer: (state, action: PayloadAction<IngredientsWithKey>) => {
+				if (action.payload.type === INGREDIENT_TYPE.BUN) {
+					state.bun = action.payload;
+				} else {
+					state.burgerList.push(action.payload);
+				}
+			},
+			prepare: (ingredient: DataInterface) => {
 				const key = v4();
-				state.burgerList.push({ ...action.payload, key });
-			}
+				return { payload: { ...ingredient, key } };
+			},
 		},
 		removeIngredient: (state, action) => {
 			state.burgerList = [
