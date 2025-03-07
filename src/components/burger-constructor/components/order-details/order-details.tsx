@@ -3,7 +3,7 @@ import styles from './styles.module.scss';
 import orderDoneImage from '../../../../images/order-done.svg';
 
 interface Props {
-	orderId: string;
+	orderId: number;
 }
 
 const OrderDetails = ({ orderId }: Props) => (

@@ -13,4 +13,7 @@ module.exports = {
 		hot: true,
 	},
 	plugins: [new ReactRefreshWebpackPlugin()],
+	watchOptions: {
+		ignored: /node_modules/
+	}
 };
