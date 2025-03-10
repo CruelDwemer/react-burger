@@ -1,12 +1,15 @@
-import { BASE_URL } from '@utils/constants';
+import request from './request';
+import { DataInterface } from '../types';
+
+interface GetIngredientsResponse {
+	data: DataInterface[];
+	success: boolean;
+}
 
 const getIngredients = async () => {
-	const response = await fetch(`${BASE_URL}ingredients`);
-	if (!response.ok) {
-		return Promise.reject(`Ошибка ${response.status}`);
-	}
-	const result = await response.json();
+	const response = await request('ingredients');
+	const result: GetIngredientsResponse = await response.json();
 	return result.data;
 };
 
-export { getIngredients };
+export default getIngredients;

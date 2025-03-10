@@ -5,85 +5,140 @@ import {
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { DataInterface, TAB } from '../burger-ingredients/types';
 import BurgerConstructorItem from './components/burger-constructor-item';
 import OrderDetails from './components/order-details';
 import Modal from '../modal';
-import { useState } from 'react';
+import { SyntheticEvent, useCallback, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { DataInterface } from '../../types';
+import { useDrop } from "react-dnd";
+import { addIngredient, Store } from '../../services/index';
+import classnames from '@utils/classnames';
+import { sendOrderInfo, flushState } from '../../services/index';
+import { UnknownAction } from 'redux';
 
-interface Props {
-	data: DataInterface[];
-}
+const BurgerConstructor = () => {
+	const { ingredients } = useSelector((state: Store) => state.ingredients);
+	const {
+		burgerList,
+		bun
+	} = useSelector((state: Store) => state.burger);
+	const { orderInfo } = useSelector((state: Store) => state.order)
 
-const BurgerConstructor = ({ data }: Props) => {
-	const bun = data[0];
-	const constructorData = data.filter((el) => el.type !== TAB.BUN).slice(0, 6);
+	const dispatch = useDispatch();
+
+	const [ , dropTarget ] = useDrop({
+		accept: "ingredient",
+		drop(item: any) {
+			const itemToStore = ingredients.find(element => element._id === item.dataId);
+			if (itemToStore) {
+				dispatch(addIngredient(itemToStore));
+			}
+		},
+	});
 
 	const [openOrderModal, setOpenOrderModal] = useState<boolean>(false);
 	const showOrderModal = setOpenOrderModal.bind(null, true);
 	const hideOrderModal = setOpenOrderModal.bind(null, false);
 
+	const totalCost = burgerList.reduce((acc, item) => (
+		acc + item.price
+	), bun?.price ? bun.price * 2 : 0);
+
+	const createOrder = useCallback((e: SyntheticEvent) => {
+		e.stopPropagation();
+		showOrderModal();
+		dispatch(sendOrderInfo({
+			ingredients: [bun?._id, ...burgerList.map(({ _id }) => _id), bun?._id].filter(el => el) as string[]
+		}) as unknown as UnknownAction)
+	}, [bun, burgerList]);
+
+	const closeOrderModal = () => {
+		hideOrderModal();
+		dispatch(flushState())
+	}
+
+	const orderId = orderInfo?.order?.number;
+
 	return (
-		<section className={styles.container}>
+		<section className={styles.container} ref={dropTarget}>
 			{
 				openOrderModal &&
-				<Modal closeModal={hideOrderModal}>
-					<OrderDetails orderId={'034536'} />
+				orderId &&
+				<Modal closeModal={closeOrderModal}>
+					<OrderDetails orderId={orderId} />
 				</Modal>
 			}
 			<div className={styles.top}>
-				{bun && (
-					<ConstructorElement
-						text={`${bun.name}\n (верх)`}
-						price={bun.price}
-						thumbnail={bun.image_mobile}
-						extraClass='mb-4'
-						isLocked={true}
-						type='top'
-					/>
-				)}
+				<Bun bun={bun} type='top' />
 			</div>
 			<ul className={styles.items}>
-				{constructorData &&
-					constructorData.map((item, index) => (
+				{burgerList.length ?
+					burgerList.map((item, index) => (
 						<BurgerConstructorItem
 							index={index}
 							text={item.name}
 							price={item.price}
 							thumbnail={item.image_mobile}
-							length={constructorData.length}
-							key={item._id}
+							key={item.key}
+							dataKey={item.key}
+							isLast={index === burgerList.length - 1}
 						/>
-					))}
+					)) : <ElementPlaceHolder/>
+				}
 			</ul>
 			<div className={styles.bottom}>
-				{bun && (
-					<ConstructorElement
-						text={`${bun.name} \n (низ)`}
-						price={bun.price}
-						thumbnail={bun.image_mobile}
-						isLocked={true}
-						extraClass='mt-4'
-						type='bottom'
-					/>
-				)}
+				<Bun bun={bun} type='bottom' />
 			</div>
 			<div className={styles.result}>
 				<div className={styles.price}>
-					<p className={styles.priceCount}>610</p>
+					<p className={styles.priceCount}>{totalCost}</p>
 					<CurrencyIcon type='primary' />
 				</div>
 				<Button
 					type='primary'
 					size='large'
 					htmlType='button'
-					onClick={showOrderModal}
+					onClick={createOrder}
 				>
 					Оформить заказ
 				</Button>
 			</div>
 		</section>
 	);
+};
+
+interface BunProps {
+	bun: DataInterface | null;
+	type: 'bottom' | 'top';
+}
+
+const TopBunPlaceHolder = () => <div className={classnames(styles.constructorElement, styles.constructorElementPosTop)}>Добавьте булку</div>
+const BottomBunPlaceHolder = () => <div className={classnames(styles.constructorElement, styles.constructorElementPosBottom)}>Добавьте булку</div>
+const ElementPlaceHolder = () => <div className={styles.constructorElement}>Добавьте ингредиент</div>
+
+const Bun = ({ bun, type }: BunProps) => {
+	const [ , dropTarget ] = useDrop({
+		accept: "inside",
+		drop: item => ({ data: type })
+	});
+
+	if(!bun) {
+		return type === 'top' ? <TopBunPlaceHolder/> : <BottomBunPlaceHolder/>
+	}
+
+	return (
+		<div ref={dropTarget}>
+			<ConstructorElement
+				text={`${bun!.name} \n ${type === 'top' ? '(верх)' : '(низ)'}`}
+				price={bun!.price}
+				thumbnail={bun!.image_mobile}
+				isLocked={true}
+				extraClass='mt-4'
+				type={type}
+			/>
+		</div>
+	)
 };
 
 export default BurgerConstructor;

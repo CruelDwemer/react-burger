@@ -14,12 +14,12 @@ const AppHeader = () => (
 		<div className={styles.buttonWrapper}>
 			<HeaderButton
 				text='Конструктор'
-				icon={<BurgerIcon type='secondary' />}
+				Icon={BurgerIcon}
 				active
 			/>
 			<HeaderButton
 				text='Лента заказов'
-				icon={<ListIcon type='secondary' />}
+				Icon={ListIcon}
 				buttonClassName={styles.rightButton}
 			/>
 		</div>
@@ -28,7 +28,7 @@ const AppHeader = () => (
 			className={classnames(styles.buttonWrapper, styles.profileButtonWrapper)}>
 			<HeaderButton
 				text='Личный кабинет'
-				icon={<ProfileIcon type='secondary' />}
+				Icon={ProfileIcon}
 			/>
 		</div>
 	</header>
