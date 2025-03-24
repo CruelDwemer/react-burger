@@ -9,12 +9,14 @@ import {
 	ingredientInfoSlice,
 	IngredientInfoState,
 } from './ingredient-info-slice';
+import { userSlice, UserState } from '@services/user-slice';
 
 const rootReducer = combineSlices(
 	ingredientsSlice,
 	burgerConstructorSlice,
 	ingredientInfoSlice,
-	orderSlice
+	orderSlice,
+	userSlice
 );
 
 export default rootReducer;
@@ -24,6 +26,7 @@ export interface Store {
 	ingredientInfo: IngredientInfoState;
 	burger: BurgerState;
 	order: OrderState;
+	user: UserState;
 }
 
 export { ingredientsSlice, getIngredientsQuery } from './ingredients-slice';

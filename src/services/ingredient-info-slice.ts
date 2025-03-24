@@ -2,11 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { DataInterface } from '../types';
 
 export interface IngredientInfoState {
-	selectedIngredient: DataInterface | null
+	selectedIngredient: DataInterface | null;
 }
 
 const initialState: IngredientInfoState = {
-	selectedIngredient: null
+	selectedIngredient: null,
 };
 
 const ingredientInfoSlice = createSlice({

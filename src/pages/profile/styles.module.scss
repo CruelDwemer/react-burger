@@ -1,0 +1,52 @@
+.main {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	position: relative;
+	top: 150px;
+}
+
+.list {
+	composes: mr-15 from global;
+	width: 380px;
+}
+
+.container {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+}
+
+.routes {
+	composes: mb-20 from global;
+	list-style-type: none;
+}
+
+.route {
+	composes: text text_type_main-medium from global;
+	padding: 22px 0;
+	cursor: pointer;
+}
+
+.routeSecondary {
+	composes: text text_type_main-medium text_color_inactive from global;
+	padding: 22px 0;
+	cursor: pointer;
+}
+
+.text {
+	composes: text text_type_main-small text_color_inactive from global;
+}
+
+.inputs {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.buttons {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	width: 100%;
+}
