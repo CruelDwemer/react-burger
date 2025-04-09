@@ -6,27 +6,27 @@ import {
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './styles.module.scss';
-import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { loginUser, setUser } from '@services/user-slice';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { AnyAction } from '@reduxjs/toolkit';
+import useForm from '../../hooks/useForm';
 
-interface LoginForm {
+interface ILoginForm {
 	email: string;
 	password: string;
 }
 
 const LoginPage = () => {
-	const [form, setForm] = useState<LoginForm>({ email: '', password: '' });
+	const { values: form, handleChange } = useForm<ILoginForm>({
+		email: '',
+		password: '',
+	});
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const from = location.state?.from?.pathname || '/';
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setForm({ ...form, [e.target.name]: e.target.value });
-	};
 
 	const submitForm = async (e: React.FormEvent) => {
 		e.preventDefault();

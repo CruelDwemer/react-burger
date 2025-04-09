@@ -6,16 +6,16 @@ import {
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import * as React from 'react';
-import { useState } from 'react';
 import { resetPassword } from '../../api/user';
+import useForm from '../../hooks/useForm';
+
+interface IForgotPasswordForm {
+	email: string;
+}
 
 const ForgotPassword = () => {
-	const [form, setForm] = useState({ email: '' });
+	const { values: form, handleChange } = useForm<IForgotPasswordForm>({ email: '' });
 	const navigate = useNavigate();
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setForm({ ...form, [e.target.name]: e.target.value });
-	};
 
 	const submitForm = async (e: React.FormEvent) => {
 		e.preventDefault();

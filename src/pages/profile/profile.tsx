@@ -10,9 +10,24 @@ import { logoutUser, modifyUser, setUser } from '@services/user-slice';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AnyAction } from '@reduxjs/toolkit';
 import { Store } from '@services/index';
+import useForm from '../../hooks/useForm';
+
+interface IProfileForm extends Record<string, string> {
+	name: string;
+	login: string;
+	password: string;
+}
 
 const Profile = () => {
-	const [form, setForm] = useState({ name: '', login: '', password: '' });
+	const {
+		values: form,
+		handleChange: handleFormChange,
+		setValues,
+	} = useForm<IProfileForm>({
+		name: '',
+		login: '',
+		password: '',
+	});
 	const [initialData, setInitialData] = useState({
 		name: '',
 		login: '',
@@ -41,13 +56,17 @@ const Profile = () => {
 	};
 
 	const cancelChange = () => {
-		setForm({ name: initialData.name, login: initialData.login, password: '' });
+		setValues({
+			name: initialData.name,
+			login: initialData.login,
+			password: '',
+		});
 		toggleFormChanged(false);
 	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		toggleFormChanged(true);
-		setForm({ ...form, [e.target.name]: e.target.value });
+		handleFormChange(e);
 	};
 
 	function openOrders() {
@@ -56,7 +75,7 @@ const Profile = () => {
 
 	useEffect(() => {
 		if (userState.isAuth) {
-			setForm({
+			setValues({
 				name: userState.user?.name ?? '',
 				login: userState.user?.email ?? '',
 				password: '',
@@ -67,7 +86,7 @@ const Profile = () => {
 				password: '',
 			});
 		}
-	}, [userState]);
+	}, [setValues, userState]);
 
 	useEffect(() => {
 		if (location.pathname === '/profile/orders') {

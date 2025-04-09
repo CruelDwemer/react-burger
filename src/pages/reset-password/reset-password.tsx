@@ -8,17 +8,22 @@ import {
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { setNewPassword } from '../../api/user';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import useForm from '../../hooks/useForm';
+
+interface IResetPasswordForm {
+	password: string;
+	token: string;
+}
 
 const ResetPassword = () => {
-	const [form, setForm] = useState({ password: '', token: '' });
+	const { values: form, handleChange } = useForm<IResetPasswordForm>({
+		password: '',
+		token: '',
+	});
 	const navigate = useNavigate();
 	const location = useLocation();
 	const from = location.state?.from || '/';
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setForm({ ...form, [e.target.name]: e.target.value });
-	};
 
 	const submitForm = async (e: React.FormEvent) => {
 		e.preventDefault();

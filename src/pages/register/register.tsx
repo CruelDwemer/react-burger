@@ -8,19 +8,25 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './styles.module.scss';
 import * as React from 'react';
-import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { registerUser } from '@services/user-slice';
 import { AnyAction } from '@reduxjs/toolkit';
+import useForm from '../../hooks/useForm';
+
+interface IRegisterForm {
+	name: string;
+	email: string;
+	password: string;
+}
 
 const RegisterPage = () => {
-	const [form, setForm] = useState({ name: '', email: '', password: '' });
+	const { values: form, handleChange } = useForm<IRegisterForm>({
+		name: '',
+		email: '',
+		password: '',
+	});
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setForm({ ...form, [e.target.name]: e.target.value });
-	};
 
 	const submitForm = async (e: React.FormEvent) => {
 		e.preventDefault();
