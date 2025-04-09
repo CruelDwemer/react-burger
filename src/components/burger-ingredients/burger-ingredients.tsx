@@ -5,7 +5,7 @@ import styles from './styles.module.scss';
 import { ITab, INGREDIENT_TYPE } from './types';
 import IngredientsBlock from './components/ingredients-block';
 import { useSelector } from 'react-redux';
-import { Store } from '@services/index';
+import { IStore } from '@services/index';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const tabs: ITab[] = [
@@ -75,7 +75,7 @@ const BurgerIngredients = () => {
 		</Tab>
 	);
 
-	const { ingredients } = useSelector((state: Store) => state.ingredients);
+	const { ingredients } = useSelector((state: IStore) => state.ingredients);
 
 	return (
 		<>

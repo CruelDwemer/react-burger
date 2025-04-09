@@ -5,7 +5,7 @@ import InfoBlock from './info-block';
 import { DataInterface } from '../../../../types';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
-import { Store } from '@services/index';
+import { IStore } from '@services/index';
 import classnames from '@utils/classnames';
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 const IngredientDetails = ({ centeredHeader = false }: Props) => {
 	const [ingredient, setIngredient] = useState<DataInterface | null>(null)
 
-	const { ingredients } = useSelector((state: Store) => state.ingredients);
+	const { ingredients } = useSelector((state: IStore) => state.ingredients);
 	const params = useParams();
 
 	useEffect(() => {

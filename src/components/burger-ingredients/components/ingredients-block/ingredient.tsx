@@ -7,7 +7,7 @@ import {
 import { DataInterface } from '../../../../types';
 import { useDrag } from 'react-dnd';
 import { useSelector } from 'react-redux';
-import { Store } from '@services/index';
+import { IStore } from '@services/index';
 import { INGREDIENT_TYPE } from '../../types';
 
 interface Props extends DataInterface {
@@ -23,7 +23,7 @@ const Ingredient = ({ name, image, price, onClick, _id, type }: Props) => {
 		}),
 	});
 	let count = 0;
-	const { burgerList, bun } = useSelector((store: Store) =>
+	const { burgerList, bun } = useSelector((store: IStore) =>
 		store.burger
 	);
 	if (type === INGREDIENT_TYPE.BUN) {

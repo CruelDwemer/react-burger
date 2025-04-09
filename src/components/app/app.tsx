@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import AppHeader from '../app-header';
 import { Provider, useDispatch } from 'react-redux';
-import { configureStore, AnyAction } from '@reduxjs/toolkit';
-import rootReducer, { getIngredientsQuery } from '@services/index';
+import {AnyAction, Store, Action} from '@reduxjs/toolkit';
+import store, { getIngredientsQuery, IStore } from '@services/index';
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -82,23 +82,12 @@ const App = () => {
 	);
 };
 
-const AppWithProvider = () => {
-	const store = configureStore({
-		reducer: rootReducer,
-		middleware: (getDefaultMiddleware) =>
-			getDefaultMiddleware({
-				serializableCheck: false,
-			}),
-		devTools: true,
-	});
-
-	return (
-		<Provider store={store}>
-			<Router>
-				<App />
-			</Router>
-		</Provider>
-	);
-};
+const AppWithProvider = () => (
+	<Provider store={store as unknown as Store<IStore, Action<string>>}>
+		<Router>
+			<App />
+		</Router>
+	</Provider>
+);
 
 export default AppWithProvider;

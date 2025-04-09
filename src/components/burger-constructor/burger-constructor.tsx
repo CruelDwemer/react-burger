@@ -12,7 +12,7 @@ import { SyntheticEvent, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DataInterface } from '../../types';
 import { useDrop } from "react-dnd";
-import { addIngredient, Store, sendOrderInfo, flushState } from '@services/index';
+import { addIngredient, IStore, sendOrderInfo, flushState } from '@services/index';
 import classnames from '@utils/classnames';
 import { UnknownAction } from 'redux';
 import { setUser } from '@services/user-slice';
@@ -20,12 +20,12 @@ import { useNavigate } from 'react-router-dom';
 import {AnyAction} from '@reduxjs/toolkit';
 
 const BurgerConstructor = () => {
-	const { ingredients } = useSelector((state: Store) => state.ingredients);
+	const { ingredients } = useSelector((state: IStore) => state.ingredients);
 	const {
 		burgerList,
 		bun
-	} = useSelector((state: Store) => state.burger);
-	const { orderInfo } = useSelector((state: Store) => state.order)
+	} = useSelector((state: IStore) => state.burger);
+	const { orderInfo } = useSelector((state: IStore) => state.order)
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();

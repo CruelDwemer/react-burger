@@ -5,11 +5,10 @@ import {
 	Input,
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser, modifyUser, setUser } from '@services/user-slice';
+import {logoutUser, modifyUser, setUser, UserState} from '@services/user-slice';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AnyAction } from '@reduxjs/toolkit';
-import { Store } from '@services/index';
+import { IStore, useAppDispatch, useAppSelector } from '@services/index';
 import useForm from '../../hooks/useForm';
 
 interface IProfileForm extends Record<string, string> {
@@ -36,10 +35,12 @@ const Profile = () => {
 	const [formChanged, toggleFormChanged] = useState(false);
 	const [ordersModal, setOrdersModal] = useState(false);
 
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
-	const userState = useSelector((state: Store) => state.user);
+	const userState: UserState = useAppSelector(
+		(state) => state.user as UserState
+	);
 
 	const handleLogout = async () => {
 		const result = await dispatch(logoutUser() as unknown as AnyAction);

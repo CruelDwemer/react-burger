@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Store } from '@services/index';
+import { IStore } from '@services/index';
 import { JSX } from 'react';
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
 
 const Protected = ({ onlyUnAuth = false, Component, element }: Props) => {
 	const location = useLocation();
-	const { user, isAuthChecked } = useSelector((state: Store) => state.user);
+	const { user, isAuthChecked } = useSelector((state: IStore) => state.user);
 
 	if (!Component && !element) {
 		console.error('Component or element must be provided');
