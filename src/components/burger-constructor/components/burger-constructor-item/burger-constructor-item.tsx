@@ -1,9 +1,9 @@
 import * as React from 'react';
 import styles from './styles.module.scss';
-import {ConstructorElement, DragIcon,} from '@ya.praktikum/react-developer-burger-ui-components';
-import {useDispatch} from 'react-redux';
-import {DropTargetMonitor, useDrag, useDrop, XYCoord} from 'react-dnd';
-import {sortIngredients, removeIngredient} from '../../../../services';
+import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useDispatch } from 'react-redux';
+import { useDrag, useDrop, XYCoord } from 'react-dnd';
+import { sortIngredients, removeIngredient } from '@services/index';
 import classnames from '@utils/classnames';
 
 interface Props {

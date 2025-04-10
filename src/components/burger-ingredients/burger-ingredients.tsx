@@ -3,16 +3,10 @@ import { useRef, useState, UIEventHandler } from 'react';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './styles.module.scss';
 import { ITab, INGREDIENT_TYPE } from './types';
-import { DataInterface } from '../../types';
 import IngredientsBlock from './components/ingredients-block';
-import Modal from '../modal';
-import IngredientDetails from './components/ingredient-details';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-	Store,
-	setIngredientInfo,
-	removeIngredientInfo,
-} from '../../services/index';
+import { useSelector } from 'react-redux';
+import { IStore } from '@services/index';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const tabs: ITab[] = [
 	{
@@ -34,17 +28,11 @@ const BurgerIngredients = () => {
 		INGREDIENT_TYPE.BUN
 	);
 
-	const { selectedIngredient } = useSelector(
-		(state: Store) => state.ingredientInfo
-	);
+	const location = useLocation();
+	const navigate = useNavigate();
 
-	const dispatch = useDispatch();
-
-	const closeModal = () => {
-		dispatch(removeIngredientInfo());
-	};
-	const selectIngredient = (ingredient: DataInterface) => {
-		dispatch(setIngredientInfo(ingredient));
+	const selectIngredient = (dataId: string) => {
+		navigate(`/ingredients/${dataId}`, { state: { background: location } });
 	};
 
 	const containerRef = useRef<HTMLDivElement | null>(null);
@@ -87,15 +75,10 @@ const BurgerIngredients = () => {
 		</Tab>
 	);
 
-	const { ingredients } = useSelector((state: Store) => state.ingredients);
+	const { ingredients } = useSelector((state: IStore) => state.ingredients);
 
 	return (
 		<>
-			{selectedIngredient && (
-				<Modal closeModal={closeModal}>
-					<IngredientDetails {...selectedIngredient} />
-				</Modal>
-			)}
 			<section>
 				<h1 className={styles.header}>Соберите бургер</h1>
 				<div className={styles.tabs}>

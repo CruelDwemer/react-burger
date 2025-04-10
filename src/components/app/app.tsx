@@ -1,46 +1,93 @@
 import * as React from 'react';
 import { useEffect } from 'react';
 import AppHeader from '../app-header';
-import BurgerIngredients from '../burger-ingredients';
-import BurgerConstructor from '../burger-constructor';
-import styles from './app.module.scss';
 import { Provider, useDispatch } from 'react-redux';
-import { configureStore, AnyAction } from '@reduxjs/toolkit';
-import rootReducer, { getIngredientsQuery } from '../../services';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import {AnyAction, Store, Action} from '@reduxjs/toolkit';
+import store, { getIngredientsQuery, IStore } from '@services/index';
+import {
+	BrowserRouter as Router,
+	Routes,
+	Route,
+	useNavigate,
+	useLocation,
+} from 'react-router-dom';
+import MainPage from '@pages/main';
+import LoginPage from '@pages/login';
+import RegisterPage from '@pages/register';
+import ResetPasswordPage from '@pages/reset-password';
+import ForgotPassword from '@pages/forgot-password';
+import Profile from '@pages/profile';
+import IngredientPage from '@pages/ingredient';
+import Modal from '../modal';
+import IngredientDetails from '../burger-ingredients/components/ingredient-details';
+import { setUser } from '@services/user-slice';
+import { OnlyAuth, OnlyUnAuth } from '../protected';
 
 const App = () => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const location = useLocation();
+	const background = location.state && location.state.background;
 
 	useEffect(() => {
+		dispatch(setUser() as unknown as AnyAction);
 		dispatch(getIngredientsQuery() as unknown as AnyAction);
 	}, [dispatch]);
+
+	const closeIngredientDetailsModal = () => {
+		navigate(-1);
+	};
 
 	return (
 		<>
 			<AppHeader />
-			<DndProvider backend={HTML5Backend}>
-				<main className={styles.main}>
-					<BurgerIngredients />
-					<BurgerConstructor />
-				</main>
-			</DndProvider>
+			<Routes location={background || location}>
+				<Route path='/' Component={MainPage} />
+				<Route path='/login' element={<OnlyUnAuth Component={LoginPage} />} />
+				<Route
+					path='/register'
+					element={<OnlyUnAuth Component={RegisterPage} />}
+				/>
+				<Route
+					path='/forgot-password'
+					element={<OnlyUnAuth Component={ForgotPassword} />}
+				/>
+				<Route
+					path='/reset-password'
+					element={<OnlyUnAuth Component={ResetPasswordPage} />}
+				/>
+				<Route path='/profile' element={<OnlyAuth Component={Profile} />} />
+				<Route
+					path='/ingredients/:id'
+					element={
+						<IngredientPage>
+							<IngredientDetails centeredHeader />
+						</IngredientPage>
+					}
+				/>
+			</Routes>
+			{background && (
+				<Routes>
+					<Route
+						path='/ingredients/:id'
+						element={
+							<Modal closeModal={closeIngredientDetailsModal}>
+								<IngredientDetails />
+							</Modal>
+						}
+					/>
+				</Routes>
+			)}
 		</>
 	);
 };
 
-const AppWithProvider = () => {
-	const store = configureStore({
-		reducer: rootReducer,
-		devTools: true,
-	});
-
-	return (
-		<Provider store={store}>
+const AppWithProvider = () => (
+	<Provider store={store as unknown as Store<IStore, Action<string>>}>
+		<Router>
 			<App />
-		</Provider>
-	);
-};
+		</Router>
+	</Provider>
+);
 
 export default AppWithProvider;
