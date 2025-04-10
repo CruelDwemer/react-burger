@@ -4,8 +4,7 @@ import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './styles.module.scss';
 import { ITab, INGREDIENT_TYPE } from './types';
 import IngredientsBlock from './components/ingredients-block';
-import { useSelector } from 'react-redux';
-import { IStore } from '@services/index';
+import { useAppSelector } from '@services/index';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const tabs: ITab[] = [
@@ -23,7 +22,7 @@ const tabs: ITab[] = [
 	},
 ];
 
-const BurgerIngredients = () => {
+const BurgerIngredients = (): React.JSX.Element => {
 	const [selectedTab, setSelectedTab] = useState<INGREDIENT_TYPE>(
 		INGREDIENT_TYPE.BUN
 	);
@@ -31,13 +30,13 @@ const BurgerIngredients = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
-	const selectIngredient = (dataId: string) => {
+	const selectIngredient = (dataId: string): void => {
 		navigate(`/ingredients/${dataId}`, { state: { background: location } });
 	};
 
 	const containerRef = useRef<HTMLDivElement | null>(null);
 
-	const selectTab = (value: INGREDIENT_TYPE) => {
+	const selectTab = (value: INGREDIENT_TYPE): void => {
 		const sections = containerRef?.current?.querySelectorAll('.section') || [];
 		if (sections) {
 			const target = Array.from(sections).find(
@@ -66,7 +65,7 @@ const BurgerIngredients = () => {
 		}
 	};
 
-	const IngredientTab = ({ value, label }: ITab) => (
+	const IngredientTab = ({ value, label }: ITab): React.JSX.Element => (
 		<Tab
 			active={selectedTab === value}
 			value={value}
@@ -75,7 +74,7 @@ const BurgerIngredients = () => {
 		</Tab>
 	);
 
-	const { ingredients } = useSelector((state: IStore) => state.ingredients);
+	const { ingredients } = useAppSelector((state) => state.ingredients);
 
 	return (
 		<>

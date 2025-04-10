@@ -1,38 +1,40 @@
 import * as React from 'react';
 import styles from './styles.module.scss';
 import {
-	ConstructorElement,
 	Button,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import BurgerConstructorItem from './components/burger-constructor-item';
 import OrderDetails from './components/order-details';
 import Modal from '../modal';
-import { SyntheticEvent, useCallback, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { DataInterface } from '../../types';
+import {SyntheticEvent, useCallback, useState} from 'react';
 import { useDrop } from "react-dnd";
 import { addIngredient, IStore, sendOrderInfo, flushState } from '@services/index';
-import classnames from '@utils/classnames';
 import { UnknownAction } from 'redux';
 import { setUser } from '@services/user-slice';
 import { useNavigate } from 'react-router-dom';
-import {AnyAction} from '@reduxjs/toolkit';
+import { AnyAction } from '@reduxjs/toolkit';
+import { useAppSelector, useAppDispatch } from '@services/index';
+import Bun, { ElementPlaceHolder } from './components/bun';
 
-const BurgerConstructor = () => {
-	const { ingredients } = useSelector((state: IStore) => state.ingredients);
+interface IDragObject {
+	dataId: string;
+}
+
+const BurgerConstructor = (): React.JSX.Element => {
+	const { ingredients } = useAppSelector(state => state.ingredients)
 	const {
 		burgerList,
 		bun
-	} = useSelector((state: IStore) => state.burger);
-	const { orderInfo } = useSelector((state: IStore) => state.order)
+	} = useAppSelector(state => state.burger)
+	const { orderInfo } = useAppSelector(state => state.order);
 
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
-	const [ , dropTarget ] = useDrop({
+	const [ , dropTarget ] = useDrop<IDragObject, unknown, unknown>({
 		accept: "ingredient",
-		drop(item: any) {
+		drop(item) {
 			const itemToStore = ingredients.find(element => element._id === item.dataId);
 			if (itemToStore) {
 				dispatch(addIngredient(itemToStore));
@@ -44,11 +46,11 @@ const BurgerConstructor = () => {
 	const showOrderModal = setOpenOrderModal.bind(null, true);
 	const hideOrderModal = setOpenOrderModal.bind(null, false);
 
-	const totalCost = burgerList.reduce((acc, item) => (
+	const totalCost: number = burgerList.reduce((acc, item) => (
 		acc + item.price
 	), bun?.price ? bun.price * 2 : 0);
 
-	const createOrder = useCallback(async (e: SyntheticEvent) => {
+	const createOrder = useCallback(async (e: SyntheticEvent): Promise<void> => {
 		e.stopPropagation();
 		const user = await dispatch(setUser() as unknown as AnyAction);
 		if(!user.payload?.success) {
@@ -61,12 +63,12 @@ const BurgerConstructor = () => {
 		}) as unknown as UnknownAction)
 	}, [bun, burgerList]);
 
-	const closeOrderModal = () => {
+	const closeOrderModal = (): void => {
 		hideOrderModal();
 		dispatch(flushState())
 	}
 
-	const orderId = orderInfo?.order?.number;
+	const orderId: number | undefined = orderInfo?.order?.number;
 
 	return (
 		<section className={styles.container} ref={dropTarget}>
@@ -114,39 +116,6 @@ const BurgerConstructor = () => {
 			</div>
 		</section>
 	);
-};
-
-interface BunProps {
-	bun: DataInterface | null;
-	type: 'bottom' | 'top';
-}
-
-const TopBunPlaceHolder = () => <div className={classnames(styles.constructorElement, styles.constructorElementPosTop)}>Добавьте булку</div>
-const BottomBunPlaceHolder = () => <div className={classnames(styles.constructorElement, styles.constructorElementPosBottom)}>Добавьте булку</div>
-const ElementPlaceHolder = () => <div className={styles.constructorElement}>Добавьте ингредиент</div>
-
-const Bun = ({ bun, type }: BunProps) => {
-	const [ , dropTarget ] = useDrop({
-		accept: "inside",
-		drop: item => ({ data: type })
-	});
-
-	if(!bun) {
-		return type === 'top' ? <TopBunPlaceHolder/> : <BottomBunPlaceHolder/>
-	}
-
-	return (
-		<div ref={dropTarget}>
-			<ConstructorElement
-				text={`${bun!.name} \n ${type === 'top' ? '(верх)' : '(низ)'}`}
-				price={bun!.price}
-				thumbnail={bun!.image_mobile}
-				isLocked={true}
-				extraClass='mt-4'
-				type={type}
-			/>
-		</div>
-	)
 };
 
 export default BurgerConstructor;

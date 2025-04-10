@@ -9,7 +9,7 @@ import styles from './styles.module.scss';
 import HeaderButton from './components/header-button';
 import classnames from '@utils/classnames';
 
-const AppHeader = () => (
+const AppHeader = (): React.JSX.Element => (
 	<header className={styles.header}>
 		<div className={styles.buttonWrapper}>
 			<HeaderButton text='Конструктор' Icon={BurgerIcon} link='/' />

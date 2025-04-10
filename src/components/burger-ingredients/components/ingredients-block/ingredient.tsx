@@ -6,16 +6,30 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { DataInterface } from '../../../../types';
 import { useDrag } from 'react-dnd';
-import { useSelector } from 'react-redux';
-import { IStore } from '@services/index';
+import { useAppSelector } from '@services/index';
 import { INGREDIENT_TYPE } from '../../types';
 
-interface Props extends DataInterface {
+interface IDragObject {
+	dataId: string;
+}
+
+interface ICollectedProps {
+	isDrag: boolean;
+}
+
+interface IProps extends DataInterface {
 	onClick: () => void;
 }
 
-const Ingredient = ({ name, image, price, onClick, _id, type }: Props) => {
-	const [, dragRef] = useDrag({
+const Ingredient = ({
+	name,
+	image,
+	price,
+	onClick,
+	_id,
+	type,
+}: IProps): React.JSX.Element => {
+	const [, dragRef] = useDrag<IDragObject, unknown, ICollectedProps>({
 		type: 'ingredient',
 		item: { dataId: _id },
 		collect: (monitor) => ({
@@ -23,9 +37,7 @@ const Ingredient = ({ name, image, price, onClick, _id, type }: Props) => {
 		}),
 	});
 	let count = 0;
-	const { burgerList, bun } = useSelector((store: IStore) =>
-		store.burger
-	);
+	const { burgerList, bun } = useAppSelector((store) => store.burger);
 	if (type === INGREDIENT_TYPE.BUN) {
 		if (bun?._id === _id) {
 			count = 2;

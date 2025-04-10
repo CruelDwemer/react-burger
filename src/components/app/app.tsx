@@ -23,7 +23,7 @@ import IngredientDetails from '../burger-ingredients/components/ingredient-detai
 import { setUser } from '@services/user-slice';
 import { OnlyAuth, OnlyUnAuth } from '../protected';
 
-const App = () => {
+const App = (): React.JSX.Element => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -82,7 +82,7 @@ const App = () => {
 	);
 };
 
-const AppWithProvider = () => (
+const AppWithProvider = (): React.JSX.Element => (
 	<Provider store={store as unknown as Store<IStore, Action<string>>}>
 		<Router>
 			<App />

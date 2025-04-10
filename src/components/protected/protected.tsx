@@ -1,18 +1,20 @@
 import * as React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { IStore } from '@services/index';
+import { useAppSelector } from '@services/index';
 import { JSX } from 'react';
+import { UserState } from '@services/user-slice';
 
-interface Props {
+interface IProps {
 	onlyUnAuth?: boolean;
-	Component?: React.ComponentType<any>;
+	Component?: React.ComponentType;
 	element?: JSX.Element;
 }
 
-const Protected = ({ onlyUnAuth = false, Component, element }: Props) => {
+const Protected = ({ onlyUnAuth = false, Component, element }: IProps) => {
 	const location = useLocation();
-	const { user, isAuthChecked } = useSelector((state: IStore) => state.user);
+	const { user, isAuthChecked } = useAppSelector(
+		(state) => state.user as UserState
+	);
 
 	if (!Component && !element) {
 		console.error('Component or element must be provided');
@@ -42,6 +44,6 @@ const Protected = ({ onlyUnAuth = false, Component, element }: Props) => {
 };
 
 export const OnlyAuth = Protected;
-export const OnlyUnAuth = (props: Omit<Props, 'onlyUnAuth'>) => (
+export const OnlyUnAuth = (props: Omit<IProps, 'onlyUnAuth'>) => (
 	<Protected {...props} onlyUnAuth={true} />
 );

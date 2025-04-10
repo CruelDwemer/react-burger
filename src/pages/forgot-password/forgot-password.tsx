@@ -14,7 +14,9 @@ interface IForgotPasswordForm {
 }
 
 const ForgotPassword = () => {
-	const { values: form, handleChange } = useForm<IForgotPasswordForm>({ email: '' });
+	const { values: form, handleChange } = useForm<IForgotPasswordForm>({
+		email: '',
+	});
 	const navigate = useNavigate();
 
 	const submitForm = async (e: React.FormEvent) => {

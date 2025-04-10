@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { FC } from 'react';
 import styles from './styles.module.css';
 import { TIconProps } from '@ya.praktikum/react-developer-burger-ui-components/dist/ui/icons/utils';
 import classnames from '@utils/classnames';
 import { NavLink } from 'react-router-dom';
 
-interface Props {
+interface IProps {
 	text: string;
 	active?: boolean;
 	buttonClassName?: string;
@@ -14,12 +13,12 @@ interface Props {
 	link: string;
 }
 
-const HeaderButton: FC<Props> = ({
+const HeaderButton = ({
 	Icon,
 	text,
 	link,
 	buttonClassName = '',
-}) => (
+}: IProps): React.JSX.Element => (
 	<NavLink to={link}>
 		{({ isActive }) => (
 			<Button

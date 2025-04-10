@@ -5,10 +5,15 @@ import {
 	Input,
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import {logoutUser, modifyUser, setUser, UserState} from '@services/user-slice';
+import {
+	logoutUser,
+	modifyUser,
+	setUser,
+	UserState,
+} from '@services/user-slice';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AnyAction } from '@reduxjs/toolkit';
-import { IStore, useAppDispatch, useAppSelector } from '@services/index';
+import { useAppDispatch, useAppSelector } from '@services/index';
 import useForm from '../../hooks/useForm';
 
 interface IProfileForm extends Record<string, string> {
