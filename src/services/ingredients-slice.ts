@@ -3,12 +3,12 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { IIngredientData } from '../types';
 import { IGetIngredientsResponse } from '../api/types';
 
-export interface IngredientsState {
+export interface IIngredientsState {
 	ingredients: IIngredientData[];
 }
 
 const getIngredientsQuery = createAsyncThunk<
-	IGetIngredientsResponse | Promise<unknown>
+	IGetIngredientsResponse | undefined
 >('ingredients/getIngredients', async () => {
 	try {
 		return await getIngredients();
@@ -27,11 +27,10 @@ const ingredientsSlice = createSlice({
 	reducers: {
 		default: (state) => state,
 	},
-	initialState: { ingredients: [] } as State,
+	initialState: { ingredients: [] },
 	extraReducers: (builder) => {
 		builder.addCase(getIngredientsQuery.fulfilled, (state: State, action) => {
-			state.ingredients = (action.payload as IGetIngredientsResponse)
-				?.data as IIngredientData[];
+			state.ingredients = (action.payload?.data || []) as IIngredientData[];
 		});
 	},
 });

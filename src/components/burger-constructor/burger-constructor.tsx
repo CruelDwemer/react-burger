@@ -7,7 +7,7 @@ import {
 import BurgerConstructorItem from './components/burger-constructor-item';
 import OrderDetails from './components/order-details';
 import Modal from '../modal';
-import {SyntheticEvent, useCallback, useState} from 'react';
+import { SyntheticEvent, useCallback, useState } from 'react';
 import { useDrop } from "react-dnd";
 import { addIngredient, IStore, sendOrderInfo, flushState } from '@services/index';
 import { UnknownAction } from 'redux';
@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { AnyAction } from '@reduxjs/toolkit';
 import { useAppSelector, useAppDispatch } from '@services/index';
 import Bun, { ElementPlaceHolder } from './components/bun';
+import { IIngredientData } from '../../types';
 
 interface IDragObject {
 	dataId: string;
@@ -35,7 +36,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 	const [ , dropTarget ] = useDrop<IDragObject, unknown, unknown>({
 		accept: "ingredient",
 		drop(item) {
-			const itemToStore = ingredients.find(element => element._id === item.dataId);
+			const itemToStore = ingredients.find((element: IIngredientData) => element._id === item.dataId);
 			if (itemToStore) {
 				dispatch(addIngredient(itemToStore));
 			}

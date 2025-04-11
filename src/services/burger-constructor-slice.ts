@@ -7,12 +7,12 @@ export interface IngredientWithKey extends IIngredientData {
 	key: string;
 }
 
-export interface BurgerState {
+export interface IBurgerState {
 	burgerList: IngredientWithKey[];
 	bun: IIngredientData | null;
 }
 
-const initialState: BurgerState = {
+const initialState: IBurgerState = {
 	burgerList: [],
 	bun: null,
 };

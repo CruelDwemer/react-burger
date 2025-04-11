@@ -1,13 +1,13 @@
 import { combineSlices, configureStore } from '@reduxjs/toolkit';
-import { ingredientsSlice, IngredientsState } from './ingredients-slice';
+import { ingredientsSlice, IIngredientsState } from './ingredients-slice';
 import {
 	burgerConstructorSlice,
-	BurgerState,
+	IBurgerState,
 } from './burger-constructor-slice';
 import { orderSlice, IOrderState } from './order-slice';
 import {
 	ingredientInfoSlice,
-	IngredientInfoState,
+	IIngredientInfoState,
 } from './ingredient-info-slice';
 import { userSlice, IUserState } from '@services/user-slice';
 import { useDispatch, useSelector, useStore } from 'react-redux';
@@ -20,12 +20,10 @@ const rootReducer = combineSlices(
 	userSlice
 );
 
-// export default rootReducer;
-
 export interface IStore {
-	ingredients: IngredientsState;
-	ingredientInfo: IngredientInfoState;
-	burger: BurgerState;
+	ingredients: IIngredientsState;
+	ingredientInfo: IIngredientInfoState;
+	burger: IBurgerState;
 	order: IOrderState;
 	user: IUserState;
 }
