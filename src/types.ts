@@ -1,4 +1,4 @@
-export interface DataInterface {
+export interface IIngredientData {
 	_id: string;
 	name: string;
 	type: string;
@@ -11,4 +11,11 @@ export interface DataInterface {
 	image_mobile: string;
 	image_large: string;
 	__v: number;
+}
+
+export interface IUserData {
+	login: string;
+	password: string;
+	name: string;
+	email: string;
 }

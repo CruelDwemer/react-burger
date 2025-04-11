@@ -1,4 +1,4 @@
-const checkResponse = (response: Response) => {
+const checkResponse = (response: Response): Response | Promise<never> => {
 	if (!response.ok) {
 		return Promise.reject(`Ошибка ${response.status}`);
 	}

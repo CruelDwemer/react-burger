@@ -2,11 +2,11 @@ import * as React from 'react';
 import styles from './styles.module.scss';
 import orderDoneImage from '../../../../images/order-done.svg';
 
-interface Props {
+interface IProps {
 	orderId: number;
 }
 
-const OrderDetails = ({ orderId }: Props) => (
+const OrderDetails = ({ orderId }: IProps): React.JSX.Element => (
 	<div className={styles.container}>
 		<p className={styles.orderId}>{orderId}</p>
 		<p className={styles.idText}>идентификатор заказа</p>

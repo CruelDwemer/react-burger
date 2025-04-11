@@ -16,7 +16,7 @@ interface IResetPasswordForm {
 	token: string;
 }
 
-const ResetPassword = () => {
+const ResetPassword = (): React.JSX.Element => {
 	const { values: form, handleChange } = useForm<IResetPasswordForm>({
 		password: '',
 		token: '',
@@ -25,7 +25,9 @@ const ResetPassword = () => {
 	const location = useLocation();
 	const from = location.state?.from || '/';
 
-	const submitForm = async (e: React.FormEvent) => {
+	const submitForm = async (
+		e: React.FormEvent<HTMLFormElement>
+	): Promise<void> => {
 		e.preventDefault();
 		const result: { success: boolean } = (await setNewPassword(
 			form

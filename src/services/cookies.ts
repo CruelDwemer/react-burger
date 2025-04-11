@@ -1,19 +1,23 @@
 type TSetCookieProps = {
 	path?: string;
-	expires?: any;
-	[key: string]: any;
+	expires?: number | string;
+	[key: string]: unknown;
 };
 
-function setCookie(name: string, value: string, props?: TSetCookieProps) {
+const setCookie = (
+	name: string,
+	value: string,
+	props?: TSetCookieProps
+): void => {
 	props = props || {};
-	let exp = props.expires;
-	if (typeof exp == 'number' && exp) {
+	let exp: Date | undefined;
+	if (typeof props.expires === 'number' && props.expires) {
 		const d = new Date();
-		d.setTime(d.getTime() + exp * 1000);
-		exp = props.expires = d;
+		d.setTime(d.getTime() + props.expires * 1000);
+		exp = d;
 	}
-	if (exp && exp.toUTCString) {
-		props.expires = exp.toUTCString();
+	if (exp && (exp as Date).toUTCString) {
+		props.expires = (exp as Date).toUTCString();
 	}
 	value = encodeURIComponent(value);
 	let updatedCookie = name + '=' + value;
@@ -25,9 +29,9 @@ function setCookie(name: string, value: string, props?: TSetCookieProps) {
 		}
 	}
 	document.cookie = updatedCookie;
-}
+};
 
-function getCookie(name: string) {
+const getCookie = (name: string): string | undefined => {
 	const matches = document.cookie.match(
 		new RegExp(
 			'(?:^|; )' +
@@ -36,10 +40,10 @@ function getCookie(name: string) {
 		)
 	);
 	return matches ? decodeURIComponent(matches[1]) : undefined;
-}
+};
 
-function deleteCookie(name: string) {
+const deleteCookie = (name: string): void => {
 	setCookie(name, '', { expires: -1 });
-}
+};
 
 export { setCookie, getCookie, deleteCookie };

@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { DataInterface } from '../types';
+import { IIngredientData } from '../types';
 
-export interface IngredientInfoState {
-	selectedIngredient: DataInterface | null;
+export interface IIngredientInfoState {
+	selectedIngredient: IIngredientData | null;
 }
 
-const initialState: IngredientInfoState = {
+const initialState: IIngredientInfoState = {
 	selectedIngredient: null,
 };
 

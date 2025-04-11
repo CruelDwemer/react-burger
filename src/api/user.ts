@@ -1,111 +1,97 @@
 import request from './request';
+import {
+	ILoginResponse,
+	IRefreshTokenResponse,
+	TRegisterRequestData,
+	IResponseBase,
+	IUserInfoResponse,
+	TEmail,
+	TLoginRequestData,
+	TModifyRequestData,
+} from './types';
 
-export type UserData = {
-	email: string;
-	password: string;
-	name: string;
-};
-
-export type ModifiedData = {
-	name: string;
-	login: string;
-	password: string;
-};
-
-export type LoginData = Omit<UserData, 'name'>;
-export type Email = Pick<UserData, 'email'>;
 export type PasswordReset = {
 	password: string;
 	token: string;
 };
 
-const register = async (data: UserData) => {
-	return await request('auth/register', {
+const register = async (
+	data: TRegisterRequestData
+): Promise<IUserInfoResponse> =>
+	await request<IUserInfoResponse>('auth/register', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(data),
-	}).then((result) => result.json());
-};
+	});
 
-const login = async (data: LoginData) => {
-	return await request('auth/login', {
+const login = async (data: TLoginRequestData): Promise<ILoginResponse> =>
+	await request<ILoginResponse>('auth/login', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(data),
-	}).then((result) => result.json());
-};
+	});
 
-const getUserInfo = async (token: string) => {
-	return await request('auth/user', {
+const getUserInfo = async (token: string): Promise<IUserInfoResponse> =>
+	await request<IUserInfoResponse>('auth/user', {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `${token}`,
 		},
-	}).then((result) => result.json());
-};
+	});
 
-const changeUserInfo = async (data: ModifiedData, token: string) => {
-	return await request('auth/user', {
+const changeUserInfo = async (
+	data: TModifyRequestData,
+	token: string
+): Promise<IUserInfoResponse> =>
+	await request<IUserInfoResponse>('auth/user', {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `${token}`,
 		},
 		body: JSON.stringify(data),
-	}).then((result) => result.json());
-};
+	});
 
-const refreshToken = async (token: string) => {
-	const response = await request('auth/token', {
+const refreshToken = async (token: string): Promise<IRefreshTokenResponse> =>
+	await request<IRefreshTokenResponse>('auth/token', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ token: `${token}` }),
-	}).then((result) => result.json());
-	return response as unknown as Promise<{
-		accessToken: string;
-		success: boolean;
-	}>;
-};
+	});
 
-const resetPassword = async (data: Email) => {
-	const response = await request('password-reset', {
+const resetPassword = async (data: TEmail): Promise<IResponseBase> =>
+	await request<IResponseBase>('password-reset', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(data),
-	}).then((result) => result.json());
-	return response as unknown as Promise<{
-		success: boolean;
-	}>;
-};
+	});
 
-const setNewPassword = async (data: PasswordReset) => {
-	return await request('password-reset/reset', {
+const setNewPassword = async (data: PasswordReset): Promise<IResponseBase> =>
+	await request<IResponseBase>('password-reset/reset', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(data),
-	}).then((response) => response.json());
-};
+	});
 
-const logout = async (token: string) => {
-	return await request('auth/logout', {
+const logout = async (token: string): Promise<IResponseBase> =>
+	await request<IResponseBase>('auth/logout', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({ token: `${token}` }),
-	}).then((result) => result.json());
-};
+	});
 
 export {
 	register,

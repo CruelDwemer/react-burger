@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import AppHeader from '../app-header';
 import { Provider, useDispatch } from 'react-redux';
-import {AnyAction, Store, Action} from '@reduxjs/toolkit';
+import { AnyAction, Store, Action } from '@reduxjs/toolkit';
 import store, { getIngredientsQuery, IStore } from '@services/index';
 import {
 	BrowserRouter as Router,
@@ -23,7 +23,7 @@ import IngredientDetails from '../burger-ingredients/components/ingredient-detai
 import { setUser } from '@services/user-slice';
 import { OnlyAuth, OnlyUnAuth } from '../protected';
 
-const App = () => {
+const App = (): React.JSX.Element => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -82,7 +82,7 @@ const App = () => {
 	);
 };
 
-const AppWithProvider = () => (
+const AppWithProvider = (): React.JSX.Element => (
 	<Provider store={store as unknown as Store<IStore, Action<string>>}>
 		<Router>
 			<App />
