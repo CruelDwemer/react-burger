@@ -14,40 +14,21 @@ import {
 	getUserInfo,
 	refreshToken,
 	changeUserInfo,
-	LoginData,
-	ModifiedData,
 } from '../api/user';
 import { setCookie, getCookie, deleteCookie } from './cookies';
-
-type TLogin = {
-	email: string;
-	password: string;
-};
-
-type TUserData = {
-	email: string;
-	password: string;
-	name: string;
-};
-
-type TResponse = {
-	success: boolean;
-	user: {
-		email: string;
-		name: string;
-	};
-};
+import {
+	IUserInfoResponse,
+	ILoginResponse,
+	TRegisterRequestData,
+	TLoginRequestData,
+	TModifyRequestData,
+	IResponseBase,
+} from '../api/types';
+import { IUserData } from '../types';
 
 type TUserInfo = {
 	email: string;
 	name: string;
-};
-
-type TLoginResponse = {
-	success: boolean;
-	user: TUserInfo;
-	accessToken: string;
-	refreshToken: string;
 };
 
 type TGetUserResponse = {
@@ -55,70 +36,65 @@ type TGetUserResponse = {
 	user: TUserInfo;
 };
 
-const loginUser = createAsyncThunk<TLoginResponse, TLogin>(
+const loginUser = createAsyncThunk<ILoginResponse, TLoginRequestData>(
 	'user/loginUser',
-	async (data: LoginData) => {
-		const result = await login(data as LoginData);
-		return result as unknown as TLoginResponse;
-	}
+	async (data) => await login(data)
 );
 
-const registerUser = createAsyncThunk<TResponse, TUserData>(
+const registerUser = createAsyncThunk<IUserInfoResponse, TRegisterRequestData>(
 	'user/registerUser',
-	async (data: TUserData) => {
-		const result = await register(data as TUserData);
-		return result as unknown as TGetUserResponse;
+	async (data) => await register(data)
+);
+
+const setUser = createAsyncThunk<IUserInfoResponse>(
+	'user/setUser',
+	async () => {
+		let token = getCookie('accessToken');
+		if (!token) {
+			const refreshTokenValue = getCookie('refreshToken');
+			const result = await refreshToken(refreshTokenValue ?? '');
+			if (result.success) {
+				token = result.accessToken;
+				setCookie('accessToken', token as string, { path: '/', expires: 1200 });
+			}
+		}
+		return await getUserInfo(token ?? '');
 	}
 );
 
-const setUser = createAsyncThunk('user/setUser', async () => {
-	let token = getCookie('accessToken');
-	if (!token) {
-		const refreshTokenValue = getCookie('refreshToken');
-		const result = await refreshToken(refreshTokenValue ?? '');
-		if (result.success) {
-			token = result.accessToken;
-			setCookie('accessToken', token as string, { path: '/', expires: 1200 });
+const modifyUser = createAsyncThunk<IUserInfoResponse, TModifyRequestData>(
+	'user/modifyUser',
+	async (data) => {
+		let token = getCookie('accessToken');
+		if (!token) {
+			const refreshTokenValue = getCookie('refreshToken');
+			const result = await refreshToken(refreshTokenValue ?? '');
+			if (result.success) {
+				token = result.accessToken;
+				setCookie('accessToken', token ?? '', { path: '/', expires: 1200 });
+			}
 		}
+
+		return await changeUserInfo(data, token ?? '');
 	}
-	const result = await getUserInfo(token ?? '');
-	return result as unknown as TGetUserResponse;
-});
+);
 
-const modifyUser = createAsyncThunk('user/modifyUser', async (data: ModifiedData) => {
-	let token = getCookie('accessToken');
-	if (!token) {
-		const refreshTokenValue = getCookie('refreshToken');
-		const result = await refreshToken(refreshTokenValue ?? '');
-		if (result.success) {
-			token = result.accessToken;
-			setCookie('accessToken', token ?? '', { path: '/', expires: 1200 });
-		}
+const logoutUser = createAsyncThunk<IResponseBase>(
+	'user/logoutUser',
+	async () => {
+		const token = getCookie('refreshToken');
+		return await logout(token ?? '');
 	}
+);
 
-	const result = await changeUserInfo(data as ModifiedData, token ?? '');
-	return result as unknown as TGetUserResponse;
-});
-
-const logoutUser = createAsyncThunk('user/logoutUser', async () => {
-	const token = getCookie('refreshToken');
-	const result = await logout(token ?? '');
-	return result as unknown as { success: boolean };
-});
-
-interface TUser {
-	email: string;
-	name: string;
-}
-
-export interface UserState {
-	user: TUser | null;
+export interface IUserState {
+	user: Pick<IUserData, 'email' | 'name'> | null;
 	isAuth: boolean;
 	isAuthChecked: boolean;
 	loaded: boolean;
 }
 
-const initialState: UserState = {
+const initialState: IUserState = {
 	user: null,
 	isAuth: false,
 	isAuthChecked: false,
@@ -128,16 +104,16 @@ const initialState: UserState = {
 const userSlice = createSlice({
 	name: 'user',
 	initialState,
-	extraReducers: (builder: ActionReducerMapBuilder<UserState>) => {
+	extraReducers: (builder: ActionReducerMapBuilder<IUserState>) => {
 		builder.addCase(
 			registerUser.fulfilled,
-			(state: UserState, action: PayloadAction<TGetUserResponse>) => {
+			(state: IUserState, action: PayloadAction<TGetUserResponse>) => {
 				state.user = action.payload.user;
 			}
 		);
 		builder.addCase(
 			loginUser.fulfilled,
-			(state: UserState, action: PayloadAction<TLoginResponse>) => {
+			(state: IUserState, action: PayloadAction<ILoginResponse>) => {
 				const response = action.payload;
 				setCookie('refreshToken', response.refreshToken, {
 					path: '/',
@@ -152,7 +128,7 @@ const userSlice = createSlice({
 		);
 		builder.addCase(
 			setUser.fulfilled,
-			(state: UserState, action: PayloadAction<TGetUserResponse>) => {
+			(state: IUserState, action: PayloadAction<TGetUserResponse>) => {
 				state.loaded = true;
 				if (action.payload?.success) {
 					state.user = action.payload.user;
@@ -164,12 +140,12 @@ const userSlice = createSlice({
 				state.isAuthChecked = true;
 			}
 		);
-		builder.addCase(setUser.rejected, (state: UserState) => {
+		builder.addCase(setUser.rejected, (state: IUserState) => {
 			state.user = null;
 			state.isAuth = false;
 			state.isAuthChecked = true;
 		});
-		builder.addCase(logoutUser.fulfilled, (state: UserState) => {
+		builder.addCase(logoutUser.fulfilled, (state: IUserState) => {
 			state.user = null;
 			state.isAuth = false;
 			deleteCookie('accessToken');

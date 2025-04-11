@@ -1,36 +1,29 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { sendOrder, SendOrderRequestData } from '../api';
+import { sendOrder } from '../api';
 import { flushIngredients } from './burger-constructor-slice';
+import { ISendOrderRequestData, ISendOrderResponseData } from '../api/types';
 
-interface OrderInfo {
-	success: boolean;
-	name?: string;
-	order?: {
-		number: number;
-	};
-}
-
-export interface OrderState {
-	orderInfo: OrderInfo;
-}
-
-const sendOrderInfo = createAsyncThunk(
-	'order/sendOrderInfo',
-	async (data: SendOrderRequestData, { dispatch }) => {
-		try {
-			const response = await sendOrder(data);
-			if (response) {
-				dispatch(flushIngredients());
-				return response;
-			}
-		} catch (error) {
-			console.log(error);
+const sendOrderInfo = createAsyncThunk<
+	ISendOrderResponseData | Promise<unknown>,
+	ISendOrderRequestData
+>('order/sendOrderInfo', async (data: ISendOrderRequestData, { dispatch }) => {
+	try {
+		const response = await sendOrder(data);
+		if (response) {
+			dispatch(flushIngredients());
+			return response;
 		}
+	} catch (error) {
+		console.log(error);
 	}
-);
+});
 
-const initialState: OrderState = {
-	orderInfo: { success: false },
+export interface IOrderState {
+	orderInfo: ISendOrderResponseData['order'] | null;
+}
+
+const initialState: IOrderState = {
+	orderInfo: null,
 };
 
 const orderSlice = createSlice({
@@ -40,8 +33,8 @@ const orderSlice = createSlice({
 		flushState: () => initialState,
 	},
 	extraReducers: (builder) => {
-		builder.addCase(sendOrderInfo.fulfilled, (state: OrderState, action) => {
-			state.orderInfo = action.payload as OrderInfo;
+		builder.addCase(sendOrderInfo.fulfilled, (state: IOrderState, action) => {
+			state.orderInfo = (action.payload as ISendOrderResponseData)?.order;
 		});
 	},
 });

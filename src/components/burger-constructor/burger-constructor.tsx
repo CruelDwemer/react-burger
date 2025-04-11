@@ -68,7 +68,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 		dispatch(flushState())
 	}
 
-	const orderId: number | undefined = orderInfo?.order?.number;
+	const orderId: number | undefined = orderInfo?.number;
 
 	return (
 		<section className={styles.container} ref={dropTarget}>

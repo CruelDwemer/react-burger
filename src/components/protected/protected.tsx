@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '@services/index';
 import { JSX } from 'react';
-import { UserState } from '@services/user-slice';
+import { IUserState } from '@services/user-slice';
 
 interface IProps {
 	onlyUnAuth?: boolean;
@@ -13,7 +13,7 @@ interface IProps {
 const Protected = ({ onlyUnAuth = false, Component, element }: IProps) => {
 	const location = useLocation();
 	const { user, isAuthChecked } = useAppSelector(
-		(state) => state.user as UserState
+		(state) => state.user as IUserState
 	);
 
 	if (!Component && !element) {

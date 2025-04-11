@@ -1,15 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { DataInterface } from '../types';
+import { IIngredientData } from '../types';
 import { v4 } from 'uuid';
 import { INGREDIENT_TYPE } from '../components/burger-ingredients/types';
 
-export interface IngredientWithKey extends DataInterface {
+export interface IngredientWithKey extends IIngredientData {
 	key: string;
 }
 
 export interface BurgerState {
 	burgerList: IngredientWithKey[];
-	bun: DataInterface | null;
+	bun: IIngredientData | null;
 }
 
 const initialState: BurgerState = {
@@ -29,7 +29,7 @@ const burgerConstructorSlice = createSlice({
 					state.burgerList.push(action.payload);
 				}
 			},
-			prepare: (ingredient: DataInterface) => {
+			prepare: (ingredient: IIngredientData) => {
 				const key = v4();
 				return { payload: { ...ingredient, key } };
 			},
@@ -41,7 +41,7 @@ const burgerConstructorSlice = createSlice({
 		},
 		sortIngredients: (state, action) => {
 			const { position, index } = action.payload;
-			const ingredients: Array<DataInterface | string> = [...state.burgerList];
+			const ingredients: Array<IIngredientData | string> = [...state.burgerList];
 			ingredients.splice(
 				position,
 				0,

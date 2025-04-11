@@ -1,12 +1,12 @@
 import * as React from 'react';
 import Ingredient from './ingredient';
-import { DataInterface } from '../../../../types';
+import { IIngredientData } from '../../../../types';
 import styles from './styles.module.scss';
 import { INGREDIENT_TYPE } from '../../types';
 
 interface IProps {
 	header: string;
-	data: DataInterface[];
+	data: IIngredientData[];
 	onClick: (dataId: string) => void;
 	type: INGREDIENT_TYPE;
 }

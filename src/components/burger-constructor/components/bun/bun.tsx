@@ -1,4 +1,4 @@
-import { DataInterface } from '../../../../types';
+import { IIngredientData } from '../../../../types';
 import * as React from 'react';
 import classnames from '@utils/classnames';
 import styles from './styles.module.scss';
@@ -6,7 +6,7 @@ import { useDrop } from 'react-dnd';
 import { ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 
 interface IBunProps {
-	bun: DataInterface | null;
+	bun: IIngredientData | null;
 	type: 'top' | 'bottom';
 }
 

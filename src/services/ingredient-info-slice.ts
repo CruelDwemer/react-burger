@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { DataInterface } from '../types';
+import { IIngredientData } from '../types';
 
 export interface IngredientInfoState {
-	selectedIngredient: DataInterface | null;
+	selectedIngredient: IIngredientData | null;
 }
 
 const initialState: IngredientInfoState = {

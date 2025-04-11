@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import styles from './styles.module.scss';
 import InfoBlock from './info-block';
-import { DataInterface } from '../../../../types';
+import { IIngredientData } from '../../../../types';
 import { useParams } from 'react-router';
 import { useAppSelector } from '@services/index';
 import classnames from '@utils/classnames';
@@ -14,7 +14,7 @@ interface IProps {
 const IngredientDetails = ({
 	centeredHeader = false,
 }: IProps): React.JSX.Element | null => {
-	const [ingredient, setIngredient] = useState<DataInterface | null>(null);
+	const [ingredient, setIngredient] = useState<IIngredientData | null>(null);
 
 	const { ingredients } = useAppSelector((state) => state.ingredients);
 	const params = useParams();
@@ -22,7 +22,7 @@ const IngredientDetails = ({
 	useEffect(() => {
 		const handleState = () => {
 			const ingredient = ingredients.find(
-				(item: DataInterface) => item._id === params.id
+				(item: IIngredientData) => item._id === params.id
 			);
 			if (ingredient) {
 				setIngredient(ingredient);

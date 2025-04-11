@@ -9,7 +9,7 @@ import {
 	logoutUser,
 	modifyUser,
 	setUser,
-	UserState,
+	IUserState,
 } from '@services/user-slice';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AnyAction } from '@reduxjs/toolkit';
@@ -22,7 +22,7 @@ interface IProfileForm extends Record<string, string> {
 	password: string;
 }
 
-const Profile = () => {
+const Profile = (): React.JSX.Element => {
 	const {
 		values: form,
 		handleChange: handleFormChange,
@@ -32,7 +32,7 @@ const Profile = () => {
 		login: '',
 		password: '',
 	});
-	const [initialData, setInitialData] = useState({
+	const [initialData, setInitialData] = useState<IProfileForm>({
 		name: '',
 		login: '',
 		password: '',
@@ -43,25 +43,25 @@ const Profile = () => {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
-	const userState: UserState = useAppSelector(
-		(state) => state.user as UserState
+	const userState: IUserState = useAppSelector(
+		(state) => state.user as IUserState
 	);
 
-	const handleLogout = async () => {
+	const handleLogout = async (): Promise<void> => {
 		const result = await dispatch(logoutUser() as unknown as AnyAction);
 		if (result.payload?.success) {
 			navigate('/login');
 		}
 	};
 
-	const changeUserInfo = (e: React.FormEvent) => {
+	const changeUserInfo = (e: React.FormEvent<HTMLFormElement>): void => {
 		e.preventDefault();
 		dispatch(modifyUser(form) as unknown as AnyAction);
 		dispatch(setUser() as unknown as AnyAction);
 		toggleFormChanged(false);
 	};
 
-	const cancelChange = () => {
+	const cancelChange = (): void => {
 		setValues({
 			name: initialData.name,
 			login: initialData.login,
@@ -70,14 +70,14 @@ const Profile = () => {
 		toggleFormChanged(false);
 	};
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		toggleFormChanged(true);
 		handleFormChange(e);
 	};
 
-	function openOrders() {
+	const openOrders = (): void => {
 		navigate('/profile/orders');
-	}
+	};
 
 	useEffect(() => {
 		if (userState.isAuth) {

@@ -6,29 +6,31 @@ import {
 	Button,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './styles.module.scss';
-import { useDispatch } from 'react-redux';
 import { loginUser, setUser } from '@services/user-slice';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { AnyAction } from '@reduxjs/toolkit';
 import useForm from '../../hooks/useForm';
+import { useAppDispatch } from '@services/index';
 
 interface ILoginForm {
 	email: string;
 	password: string;
 }
 
-const LoginPage = () => {
+const LoginPage = (): React.JSX.Element => {
 	const { values: form, handleChange } = useForm<ILoginForm>({
 		email: '',
 		password: '',
 	});
 
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const from = location.state?.from?.pathname || '/';
 
-	const submitForm = async (e: React.FormEvent) => {
+	const submitForm = async (
+		e: React.FormEvent<HTMLFormElement>
+	): Promise<void> => {
 		e.preventDefault();
 		const result = await dispatch(loginUser(form) as unknown as AnyAction);
 		if (result.payload?.success) {

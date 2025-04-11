@@ -1,15 +1,7 @@
 import request from './request';
-import { DataInterface } from '../types';
+import { IGetIngredientsResponse } from './types';
 
-interface GetIngredientsResponse {
-	data: DataInterface[];
-	success: boolean;
-}
-
-const getIngredients = async () => {
-	const response = await request('ingredients');
-	const result: GetIngredientsResponse = await response.json();
-	return result.data;
-};
+const getIngredients = async (): Promise<IGetIngredientsResponse> =>
+	await request('ingredients');
 
 export default getIngredients;

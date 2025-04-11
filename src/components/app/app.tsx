@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import AppHeader from '../app-header';
 import { Provider, useDispatch } from 'react-redux';
-import {AnyAction, Store, Action} from '@reduxjs/toolkit';
+import { AnyAction, Store, Action } from '@reduxjs/toolkit';
 import store, { getIngredientsQuery, IStore } from '@services/index';
 import {
 	BrowserRouter as Router,

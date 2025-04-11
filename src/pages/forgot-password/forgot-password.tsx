@@ -13,13 +13,15 @@ interface IForgotPasswordForm {
 	email: string;
 }
 
-const ForgotPassword = () => {
+const ForgotPassword = (): React.JSX.Element => {
 	const { values: form, handleChange } = useForm<IForgotPasswordForm>({
 		email: '',
 	});
 	const navigate = useNavigate();
 
-	const submitForm = async (e: React.FormEvent) => {
+	const submitForm = async (
+		e: React.FormEvent<HTMLFormElement>
+	): Promise<void> => {
 		e.preventDefault();
 		const result: { success: boolean } = await resetPassword(form);
 		if (result.success) {

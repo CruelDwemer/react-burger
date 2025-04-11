@@ -4,7 +4,7 @@ import {
 	Counter,
 	CurrencyIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { DataInterface } from '../../../../types';
+import { IIngredientData } from '../../../../types';
 import { useDrag } from 'react-dnd';
 import { useAppSelector } from '@services/index';
 import { INGREDIENT_TYPE } from '../../types';
@@ -17,7 +17,7 @@ interface ICollectedProps {
 	isDrag: boolean;
 }
 
-interface IProps extends DataInterface {
+interface IProps extends IIngredientData {
 	onClick: () => void;
 }
 

@@ -4,12 +4,12 @@ import {
 	burgerConstructorSlice,
 	BurgerState,
 } from './burger-constructor-slice';
-import { orderSlice, OrderState } from './order-slice';
+import { orderSlice, IOrderState } from './order-slice';
 import {
 	ingredientInfoSlice,
 	IngredientInfoState,
 } from './ingredient-info-slice';
-import { userSlice, UserState } from '@services/user-slice';
+import { userSlice, IUserState } from '@services/user-slice';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 
 const rootReducer = combineSlices(
@@ -26,8 +26,8 @@ export interface IStore {
 	ingredients: IngredientsState;
 	ingredientInfo: IngredientInfoState;
 	burger: BurgerState;
-	order: OrderState;
-	user: UserState;
+	order: IOrderState;
+	user: IUserState;
 }
 
 const store = configureStore({
