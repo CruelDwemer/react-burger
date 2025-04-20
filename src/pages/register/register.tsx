@@ -8,7 +8,6 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './styles.module.scss';
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
 import { registerUser } from '@services/user-slice';
 import { AnyAction } from '@reduxjs/toolkit';
 import useForm from '../../hooks/useForm';

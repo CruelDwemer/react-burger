@@ -41,7 +41,9 @@ const burgerConstructorSlice = createSlice({
 		},
 		sortIngredients: (state, action) => {
 			const { position, index } = action.payload;
-			const ingredients: Array<IIngredientData | string> = [...state.burgerList];
+			const ingredients: Array<IIngredientData | string> = [
+				...state.burgerList,
+			];
 			ingredients.splice(
 				position,
 				0,

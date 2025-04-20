@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useEffect } from 'react';
 import AppHeader from '../app-header';
-import { Provider, useDispatch } from 'react-redux';
+import { Provider } from 'react-redux';
 import { AnyAction, Store, Action } from '@reduxjs/toolkit';
-import store, { getIngredientsQuery, IStore } from '@services/index';
+import store, { getIngredientsQuery, IStore, useAppDispatch } from '@services/index';
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -24,7 +24,7 @@ import { setUser } from '@services/user-slice';
 import { OnlyAuth, OnlyUnAuth } from '../protected';
 
 const App = (): React.JSX.Element => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const background = location.state && location.state.background;

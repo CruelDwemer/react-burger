@@ -1,9 +1,15 @@
 import * as React from 'react';
 import styles from './styles.module.scss';
-import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useDispatch } from 'react-redux';
+import {
+	ConstructorElement,
+	DragIcon,
+} from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDrag, useDrop, XYCoord } from 'react-dnd';
-import { sortIngredients, removeIngredient } from '@services/index';
+import {
+	sortIngredients,
+	removeIngredient,
+	useAppDispatch,
+} from '@services/index';
 import classnames from '@utils/classnames';
 
 interface IDragObject {
@@ -41,7 +47,7 @@ const BurgerConstructorItem = ({
 	dataKey,
 }: IProps): React.JSX.Element => {
 	const conditionalPadding = 16;
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const [{ source }, dragRef] = useDrag<
 		IDragObject,
