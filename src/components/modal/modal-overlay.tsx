@@ -1,12 +1,12 @@
 import * as React from 'react';
 import styles from './styles.module.scss';
 
-export interface ModalProps {
+export interface IModalProps {
 	closeModal: () => void;
 	children: React.ReactNode;
 }
 
-const ModalOverlay = ({ closeModal, children }: ModalProps) => {
+const ModalOverlay = ({ closeModal, children }: IModalProps) => {
 	const closeModalWindow: React.MouseEventHandler<HTMLDivElement> = (e) => {
 		if (e.target === e.currentTarget) {
 			e.stopPropagation();

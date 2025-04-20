@@ -8,10 +8,10 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './styles.module.scss';
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
 import { registerUser } from '@services/user-slice';
 import { AnyAction } from '@reduxjs/toolkit';
 import useForm from '../../hooks/useForm';
+import { useAppDispatch } from '@services/index';
 
 interface IRegisterForm {
 	name: string;
@@ -19,16 +19,18 @@ interface IRegisterForm {
 	password: string;
 }
 
-const RegisterPage = () => {
+const RegisterPage = (): React.JSX.Element => {
 	const { values: form, handleChange } = useForm<IRegisterForm>({
 		name: '',
 		email: '',
 		password: '',
 	});
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
-	const submitForm = async (e: React.FormEvent) => {
+	const submitForm = async (
+		e: React.FormEvent<HTMLFormElement>
+	): Promise<void> => {
 		e.preventDefault();
 		const result = await dispatch(registerUser(form) as unknown as AnyAction);
 		if (result.payload?.success) {

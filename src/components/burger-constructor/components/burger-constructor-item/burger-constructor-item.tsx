@@ -1,12 +1,31 @@
 import * as React from 'react';
 import styles from './styles.module.scss';
-import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useDispatch } from 'react-redux';
+import {
+	ConstructorElement,
+	DragIcon,
+} from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDrag, useDrop, XYCoord } from 'react-dnd';
-import { sortIngredients, removeIngredient } from '@services/index';
+import {
+	sortIngredients,
+	removeIngredient,
+	useAppDispatch,
+} from '@services/index';
 import classnames from '@utils/classnames';
 
-interface Props {
+interface IDragObject {
+	index: number;
+}
+
+interface IDragCollectedProps {
+	isDrag: boolean;
+	source: XYCoord | null;
+}
+
+interface IDropCollectedProps {
+	offsetData: { x: number; y: number };
+}
+
+interface IProps {
 	index: number;
 	text: string;
 	price: number;
@@ -26,11 +45,15 @@ const BurgerConstructorItem = ({
 	thumbnail,
 	isLast,
 	dataKey,
-}: Props) => {
+}: IProps): React.JSX.Element => {
 	const conditionalPadding = 16;
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
-	const [{ source }, dragRef] = useDrag({
+	const [{ source }, dragRef] = useDrag<
+		IDragObject,
+		unknown,
+		IDragCollectedProps
+	>({
 		type: 'inside',
 		item: { index },
 		collect: (monitor) => ({
@@ -49,10 +72,10 @@ const BurgerConstructorItem = ({
 		},
 	});
 
-	function handleOverBun(type: 'top' | 'bottom', index: number) {
+	const handleOverBun = (type: 'top' | 'bottom', index: number): void => {
 		const position = type === 'top' ? 0 : length;
 		dispatch(sortIngredients({ position, index }));
-	}
+	};
 
 	const handleDrop = (
 		source: XYCoord | null,
@@ -80,7 +103,11 @@ const BurgerConstructorItem = ({
 		return Math.trunc((listHeight + offsetY) / elementHeight);
 	};
 
-	const [{ offsetData }, dropTarget] = useDrop({
+	const [{ offsetData }, dropTarget] = useDrop<
+		IDragObject,
+		unknown,
+		IDropCollectedProps
+	>({
 		accept: 'inside',
 		collect: () => ({ offsetData: { x: 0, y: 0 } }),
 		hover: (item, monitor) => {
@@ -96,7 +123,7 @@ const BurgerConstructorItem = ({
 		}),
 	});
 
-	const deleteItem = () => {
+	const deleteItem = (): void => {
 		dispatch(removeIngredient(dataKey));
 	};
 

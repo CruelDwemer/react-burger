@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useEffect } from 'react';
 import AppHeader from '../app-header';
-import { Provider, useDispatch } from 'react-redux';
-import {AnyAction, Store, Action} from '@reduxjs/toolkit';
-import store, { getIngredientsQuery, IStore } from '@services/index';
+import { Provider } from 'react-redux';
+import { AnyAction, Store, Action } from '@reduxjs/toolkit';
+import store, { getIngredientsQuery, IStore, useAppDispatch } from '@services/index';
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -23,8 +23,8 @@ import IngredientDetails from '../burger-ingredients/components/ingredient-detai
 import { setUser } from '@services/user-slice';
 import { OnlyAuth, OnlyUnAuth } from '../protected';
 
-const App = () => {
-	const dispatch = useDispatch();
+const App = (): React.JSX.Element => {
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const background = location.state && location.state.background;
@@ -82,7 +82,7 @@ const App = () => {
 	);
 };
 
-const AppWithProvider = () => (
+const AppWithProvider = (): React.JSX.Element => (
 	<Provider store={store as unknown as Store<IStore, Action<string>>}>
 		<Router>
 			<App />

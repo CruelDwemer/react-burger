@@ -4,9 +4,8 @@ import BurgerIngredients from '../../components/burger-ingredients';
 import BurgerConstructor from '../../components/burger-constructor';
 import { DndProvider } from 'react-dnd';
 import * as React from 'react';
-import { JSX } from 'react';
 
-const MainPage = (): JSX.Element => (
+const MainPage = (): React.JSX.Element => (
 	<DndProvider backend={HTML5Backend}>
 		<main className={styles.main}>
 			<BurgerIngredients />
