@@ -17,6 +17,7 @@ import { AnyAction } from '@reduxjs/toolkit';
 import { useAppSelector, useAppDispatch } from '@services/index';
 import Bun, { ElementPlaceHolder } from './components/bun';
 import { IIngredientData } from '../../types';
+import {IngredientWithKey} from '@services/burger-constructor-slice';
 
 interface IDragObject {
 	dataId: string;
@@ -47,7 +48,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 	const showOrderModal = setOpenOrderModal.bind(null, true);
 	const hideOrderModal = setOpenOrderModal.bind(null, false);
 
-	const totalCost: number = burgerList.reduce((acc, item) => (
+	const totalCost: number = burgerList.reduce((acc: number, item: IngredientWithKey) => (
 		acc + item.price
 	), bun?.price ? bun.price * 2 : 0);
 
@@ -60,7 +61,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 		}
 		showOrderModal();
 		dispatch(sendOrderInfo({
-			ingredients: [bun?._id, ...burgerList.map(({ _id }) => _id), bun?._id].filter(el => el) as string[]
+			ingredients: [bun?._id, ...burgerList.map(({ _id }: IngredientWithKey) => _id), bun?._id].filter(el => el) as string[]
 		}) as unknown as UnknownAction)
 	}, [bun, burgerList]);
 
@@ -85,7 +86,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 			</div>
 			<ul className={styles.items}>
 				{burgerList.length ?
-					burgerList.map((item, index) => (
+					burgerList.map((item: IngredientWithKey, index: number) => (
 						<BurgerConstructorItem
 							index={index}
 							text={item.name}

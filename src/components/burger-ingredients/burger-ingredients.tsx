@@ -6,6 +6,7 @@ import { ITab, INGREDIENT_TYPE } from './types';
 import IngredientsBlock from './components/ingredients-block';
 import { useAppSelector } from '@services/index';
 import { useLocation, useNavigate } from 'react-router-dom';
+import {IIngredientData} from '../../types';
 
 const tabs: ITab[] = [
 	{
@@ -91,7 +92,7 @@ const BurgerIngredients = (): React.JSX.Element => {
 					onScroll={handleScroll}>
 					{tabs.map((tab, index) => {
 						const filteredData = ingredients.filter(
-							({ type }) => type === tab.value
+							({ type }: IIngredientData) => type === tab.value
 						);
 						return (
 							<IngredientsBlock

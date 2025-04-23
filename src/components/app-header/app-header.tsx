@@ -17,7 +17,7 @@ const AppHeader = (): React.JSX.Element => (
 				text='Лента заказов'
 				Icon={ListIcon}
 				buttonClassName={styles.rightButton}
-				link='/login'
+				link='/feed'
 			/>
 		</div>
 		<Logo className={styles.logo} />

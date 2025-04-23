@@ -3,7 +3,11 @@ import { useEffect } from 'react';
 import AppHeader from '../app-header';
 import { Provider } from 'react-redux';
 import { AnyAction, Store, Action } from '@reduxjs/toolkit';
-import store, { getIngredientsQuery, IStore, useAppDispatch } from '@services/index';
+import store, {
+	getIngredientsQuery,
+	IStore,
+	useAppDispatch,
+} from '@services/index';
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -22,6 +26,8 @@ import Modal from '../modal';
 import IngredientDetails from '../burger-ingredients/components/ingredient-details';
 import { setUser } from '@services/user-slice';
 import { OnlyAuth, OnlyUnAuth } from '../protected';
+import Feed from '@pages/feed';
+import OrderInfo from '../order-info';
 
 const App = (): React.JSX.Element => {
 	const dispatch = useAppDispatch();
@@ -65,6 +71,8 @@ const App = (): React.JSX.Element => {
 						</IngredientPage>
 					}
 				/>
+				<Route path='/feed' Component={Feed} />
+				<Route path='/feed/:id' Component={OrderInfo} />
 			</Routes>
 			{background && (
 				<Routes>
@@ -73,6 +81,14 @@ const App = (): React.JSX.Element => {
 						element={
 							<Modal closeModal={closeIngredientDetailsModal}>
 								<IngredientDetails />
+							</Modal>
+						}
+					/>
+					<Route
+						path='/feed/:id'
+						element={
+							<Modal closeModal={closeIngredientDetailsModal}>
+								<OrderInfo />
 							</Modal>
 						}
 					/>
