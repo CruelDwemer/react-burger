@@ -2,12 +2,8 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import AppHeader from '../app-header';
 import { Provider } from 'react-redux';
-import { AnyAction, Store, Action } from '@reduxjs/toolkit';
-import store, {
-	getIngredientsQuery,
-	IStore,
-	useAppDispatch,
-} from '@services/index';
+import { AnyAction } from '@reduxjs/toolkit';
+import store, { getIngredientsQuery, useAppDispatch } from '@services/index';
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -64,6 +60,11 @@ const App = (): React.JSX.Element => {
 				/>
 				<Route path='/profile' element={<OnlyAuth Component={Profile} />} />
 				<Route
+					path='/profile/orders'
+					element={<OnlyAuth Component={Profile} />}
+				/>
+				<Route path='/profile/orders/:id' element={<OrderInfo />} />
+				<Route
 					path='/ingredients/:id'
 					element={
 						<IngredientPage>
@@ -92,6 +93,14 @@ const App = (): React.JSX.Element => {
 							</Modal>
 						}
 					/>
+					<Route
+						path='/profile/orders/:id'
+						element={
+							<Modal closeModal={closeIngredientDetailsModal}>
+								<OrderInfo />
+							</Modal>
+						}
+					/>
 				</Routes>
 			)}
 		</>
@@ -99,7 +108,7 @@ const App = (): React.JSX.Element => {
 };
 
 const AppWithProvider = (): React.JSX.Element => (
-	<Provider store={store as unknown as Store<IStore, Action<string>>}>
+	<Provider store={store}>
 		<Router>
 			<App />
 		</Router>

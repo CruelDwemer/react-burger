@@ -44,9 +44,9 @@ export const websocketSlice = createSlice({
 		},
 	},
 	selectors: {
-		getStatus: (state) => state.status,
-		getError: (state) => state.error,
-		getOrders: (state) => state.orders,
+		getStatus: (state: WebsocketStore) => state.status,
+		getError: (state: WebsocketStore) => state.error,
+		getOrders: (state: WebsocketStore) => state.orders,
 	},
 });
 

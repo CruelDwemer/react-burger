@@ -3,7 +3,9 @@ import {
 	ActionCreatorWithPayload,
 	Middleware,
 } from '@reduxjs/toolkit';
-import type { RootState } from './types';
+import type { RootState } from '../index';
+import { refreshToken } from '../../api/user';
+import { getCookie } from '@utils/cookies';
 
 export type TWsActionTypes<R, S> = {
 	connect: ActionCreatorWithPayload<string>;
@@ -16,10 +18,11 @@ export type TWsActionTypes<R, S> = {
 	sendMessage?: ActionCreatorWithPayload<S>;
 };
 
-// @ts-ignore
+const RECONNECT_PERIOD = 3000;
+
 export const socketMiddleware = <R, S>(
 	wsActions: TWsActionTypes<R, S>,
-	withTokenRefresh: boolean = false
+	withTokenRefresh = false
 ): Middleware<Record<string, never>, RootState> => {
 	return (store) => {
 		let socket: WebSocket | null = null;
@@ -35,6 +38,7 @@ export const socketMiddleware = <R, S>(
 		} = wsActions;
 		let isConnected = false;
 		let url = '';
+		let reconnectTimer = 0;
 
 		return (next) => (action) => {
 			const { dispatch } = store;
@@ -58,6 +62,25 @@ export const socketMiddleware = <R, S>(
 
 					try {
 						const parsedData = JSON.parse(data);
+
+						if (
+							withTokenRefresh &&
+							parsedData.message === 'Invalid or missing token'
+						) {
+							const token = getCookie('refreshToken') || '';
+							refreshToken(token)
+								.then((refreshedData) => {
+									const wssUrl = new URL(url);
+									wssUrl.searchParams.set(
+										'token',
+										refreshedData.accessToken.replace('Bearer ', '')
+									);
+									dispatch(connect(wssUrl.toString()));
+								})
+								.catch((error) => dispatch(onError(error.message)));
+							dispatch(disconnect());
+							return;
+						}
 						dispatch(onMessage(parsedData));
 					} catch (err) {
 						dispatch(onError((err as Error).message));
@@ -66,6 +89,12 @@ export const socketMiddleware = <R, S>(
 
 				socket.onclose = () => {
 					onClose && dispatch(onClose());
+
+					if (isConnected) {
+						reconnectTimer = window.setTimeout(() => {
+							dispatch(connect(url));
+						}, RECONNECT_PERIOD);
+					}
 				};
 			}
 
@@ -78,7 +107,9 @@ export const socketMiddleware = <R, S>(
 			}
 
 			if (socket && disconnect.match(action)) {
+				clearTimeout(reconnectTimer);
 				isConnected = false;
+				reconnectTimer = 0;
 				socket.close();
 				socket = null;
 			}

@@ -1,5 +1,6 @@
 import request from './request';
 import { ISendOrderRequestData, ISendOrderResponseData } from './types';
+import { getToken } from '@utils/cookies';
 
 const sendOrder = async (
 	data: ISendOrderRequestData
@@ -9,6 +10,7 @@ const sendOrder = async (
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			Authorization: `${await getToken()}`,
 		},
 	});
 

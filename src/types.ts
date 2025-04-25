@@ -21,36 +21,42 @@ export interface IUserData {
 }
 
 export interface IFeedOrder {
-	createdAt: string,
-	ingredients: Array<string>,
-	number: number,
-	status: string,
-	updatedAt: string,
-	name: string,
-	_id: string
+	createdAt: string;
+	ingredients: Array<string>;
+	number: number;
+	status: string;
+	updatedAt: string;
+	name: string;
+	_id: string;
 }
 
 export interface ISocketOrdersData {
-	orders: Array<IFeedOrder>,
-	total: number,
-	totalToday: number,
-	success: boolean
+	orders: Array<IFeedOrder>;
+	total: number;
+	totalToday: number;
+	success: boolean;
+}
+
+export interface IIngredientWithUUID extends IIngredientData {
+	uniqueId: string;
+}
+
+export interface ICountedIngredient extends IIngredientWithUUID {
+	count: number;
 }
 
 export interface IFeedUpdatedOrder extends IFeedOrder {
-	updatedIngredients: Array<IIngredientData>,
-	price: number,
-	date: string,
-	uniqueId: string
+	updatedIngredients: Array<ICountedIngredient>;
+	price: number;
+	date: string;
+	uniqueId: string;
 }
 
 export interface IOrdersData {
-	orders: Array<IFeedUpdatedOrder>,
-	total: string,
-	totalToday: string,
-	working: Array<number> ,
-	ready: Array<number>,
-	success: boolean
+	orders: Array<IFeedUpdatedOrder>;
+	total: string;
+	totalToday: string;
+	working: number[];
+	ready: number[];
+	success: boolean;
 }
-
-export type IIngredientWithUUID = IIngredientData;

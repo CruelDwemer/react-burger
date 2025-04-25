@@ -1,37 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styles from './styles.module.scss';
 import { useParams, useLocation } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '@services/index';
+import { useAppSelector, useAppDispatch, RootState } from '@services/index';
 import { getUpdatedOrders } from '@services/feed-slice';
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import type {
 	IFeedUpdatedOrder,
 	IIngredientWithUUID,
-	IFeedOrder,
 	IOrdersData,
+	ICountedIngredient,
 } from '../../types';
-import { wsConnect, wsDisconnect } from '@services/actions';
+import { wsConnect, wsDisconnect } from '@services/actions/websocket-actions';
 import { getStatus, getOrders } from '@services/websocket-slice';
-import { updateOrdersData } from '@services/helpers/feed';
-import { SOCKET_URL } from '../../utils/constants';
-import { AppStore, RootState } from '@services/types';
-
-type TData = {
-	success: boolean;
-	orders: Array<IFeedOrder>;
-	total: string;
-	totalToday: string;
-};
-
-type State = {
-	feed: {
-		data: IOrdersData | null;
-	};
-};
-
-interface ICountedIngredient extends IIngredientWithUUID {
-	count: number;
-}
+import { updateOrdersData } from '@utils/feedUtils';
+import { SOCKET_URL } from '@utils/constants';
 
 const OrderInfo = (): React.JSX.Element => {
 	const [order, setOrder] = useState<IFeedUpdatedOrder>();
@@ -44,18 +26,20 @@ const OrderInfo = (): React.JSX.Element => {
 	const params = useParams();
 	const location = useLocation();
 	const dispatch = useAppDispatch();
-	const updatedOrdersData = useAppSelector(getUpdatedOrders);
+	const updatedOrdersData = useAppSelector(
+		getUpdatedOrders as unknown as () => IOrdersData | null
+	);
 
 	const socketStatus = useAppSelector(getStatus);
 	const socketOrders = useAppSelector(getOrders);
 	const ingredientsList = useAppSelector(
-		(state: AppStore) => state.ingredients.ingredients
+		(state: RootState) => state.ingredients.ingredients
 	);
 
-	function compare(
+	const compare = (
 		element: IIngredientWithUUID,
 		list: Array<ICountedIngredient>
-	): { includes: boolean; id: number } {
+	): { includes: boolean; id: number } => {
 		let includes = false;
 		let id = 0;
 		list.forEach((item, index) => {
@@ -65,9 +49,9 @@ const OrderInfo = (): React.JSX.Element => {
 			}
 		});
 		return { includes, id };
-	}
+	};
 
-	function sortIngredients() {
+	const sortIngredients = useCallback(() => {
 		const result: Array<ICountedIngredient> = [];
 		order?.updatedIngredients.forEach((item) => {
 			const compared = compare(item, result);
@@ -78,34 +62,30 @@ const OrderInfo = (): React.JSX.Element => {
 			}
 		});
 		setCountedIngredients(result);
-	}
+	}, [order?.updatedIngredients]);
 
-	function getTotalPrice(ingredients: Array<ICountedIngredient>) {
+	const getTotalPrice = (ingredients: Array<ICountedIngredient>) => {
 		const result = ingredients.reduce((acc, item) => {
 			return acc + item.price * item.count;
 		}, 0);
 		setTotalPrice(result);
-	}
+	};
 
 	useEffect(() => {
-		if (
-			socketOrders &&
-			socketOrders.success === true &&
-			ingredientsList.length > 0
-		) {
+		if (socketOrders && socketOrders.success && ingredientsList.length > 0) {
 			const updatedData = updateOrdersData(socketOrders, ingredientsList);
 			const order = updatedData.orders.find(
 				(item) => item.number === Number(params.id)
 			);
-			setOrder(order);
+			setOrder(order as IFeedUpdatedOrder);
 			if (order) {
 				setStatus(order.status);
 			}
 		}
-	}, [socketOrders, ingredientsList]);
+	}, [socketOrders, ingredientsList, params.id]);
 
 	useEffect(() => {
-		function handleState(data: IOrdersData | null) {
+		const handleState = (data: IOrdersData | null) => {
 			if (location.state?.background && data !== null) {
 				const order = data.orders.find(
 					(item) => item.number === Number(params.id)
@@ -117,20 +97,20 @@ const OrderInfo = (): React.JSX.Element => {
 			} else if (!location.state) {
 				dispatch(wsConnect(`${SOCKET_URL}/all`));
 			}
-		}
+		};
 		handleState(updatedOrdersData);
 		return () => {
 			if (socketStatus === 'ONLINE') {
 				dispatch(wsDisconnect());
 			}
 		};
-	}, [updatedOrdersData]);
+	}, [dispatch, location.state, params.id, socketStatus, updatedOrdersData]);
 
 	useEffect(() => {
 		if (order) {
 			sortIngredients();
 		}
-	}, [order]);
+	}, [order, sortIngredients]);
 
 	useEffect(() => {
 		if (countedIngredients.length > 0) {
@@ -155,13 +135,13 @@ const OrderInfo = (): React.JSX.Element => {
 			</p>
 			<p className='text text_type_main-medium mb-6'>Состав:</p>
 			<div className={styles.ingredients}>
-				{countedIngredients.map((ingedient) => (
+				{countedIngredients.map((ingredient) => (
 					<Ingredient
-						key={ingedient._id}
-						image={ingedient.image}
-						name={ingedient.name}
-						count={ingedient.count}
-						price={ingedient.price}
+						key={ingredient._id}
+						image={ingredient.image}
+						name={ingredient.name}
+						count={ingredient.count}
+						price={ingredient.price}
 					/>
 				))}
 			</div>

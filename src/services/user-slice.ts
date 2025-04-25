@@ -15,7 +15,7 @@ import {
 	refreshToken,
 	changeUserInfo,
 } from '../api/user';
-import { setCookie, getCookie, deleteCookie } from './cookies';
+import { setCookie, getCookie, deleteCookie } from '@utils/cookies';
 import {
 	IUserInfoResponse,
 	ILoginResponse,

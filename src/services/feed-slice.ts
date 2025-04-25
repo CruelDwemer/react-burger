@@ -1,16 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IFeedUpdatedOrder, IOrdersData } from '../types';
-// import { stat } from 'fs';
+import { IOrdersData } from '../types';
 
 export type FeedState = {
-	ordersData: IOrdersData | null,
-	personalOrdersData: IOrdersData | null,
-}
+	ordersData: IOrdersData | null;
+	personalOrdersData: IOrdersData | null;
+};
 
 const initialState: FeedState = {
 	ordersData: null,
-	personalOrdersData: null
-}
+	personalOrdersData: null,
+};
 
 const feedSlice = createSlice({
 	name: 'feed',
@@ -23,19 +22,28 @@ const feedSlice = createSlice({
 			state.personalOrdersData = action.payload;
 		},
 		clearOrders: (state) => {
-			state.ordersData = null
+			state.ordersData = null;
 		},
 		clearPersonalOrders: (state) => {
-			state.personalOrdersData = null
-		}
+			state.personalOrdersData = null;
+		},
 	},
 	selectors: {
-		getUpdatedOrders: state => state.ordersData,
-		getPersonalOrders: state => state.personalOrdersData
-	}
-})
+		getUpdatedOrders: (state): IOrdersData | null => state.ordersData,
+		getPersonalOrders: (state): IOrdersData | null => state.personalOrdersData,
+	},
+});
 
-const { setOrders, setPersonalOrders, clearOrders, clearPersonalOrders } = feedSlice.actions;
+const { setOrders, setPersonalOrders, clearOrders, clearPersonalOrders } =
+	feedSlice.actions;
 const { getUpdatedOrders, getPersonalOrders } = feedSlice.selectors;
 
-export {  feedSlice, setOrders, getUpdatedOrders, clearOrders, getPersonalOrders, setPersonalOrders, clearPersonalOrders }
+export {
+	feedSlice,
+	setOrders,
+	getUpdatedOrders,
+	clearOrders,
+	getPersonalOrders,
+	setPersonalOrders,
+	clearPersonalOrders,
+};

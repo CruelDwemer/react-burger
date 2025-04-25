@@ -1,29 +1,25 @@
 import { combineSlices, configureStore } from '@reduxjs/toolkit';
-import { ingredientsSlice, IIngredientsState } from './ingredients-slice';
-import {
-	burgerConstructorSlice,
-	IBurgerState,
-} from './burger-constructor-slice';
-import { orderSlice, IOrderState } from './order-slice';
-import {
-	ingredientInfoSlice,
-	IIngredientInfoState,
-} from './ingredient-info-slice';
-import { userSlice, IUserState } from '@services/user-slice';
-import { useDispatch, useSelector, useStore } from 'react-redux';
-import { feedSlice, FeedState } from '@services/feed-slice';
+import { ingredientsSlice } from './ingredients-slice';
+import { burgerConstructorSlice } from './burger-constructor-slice';
+import { orderSlice } from './order-slice';
+import { ingredientInfoSlice } from './ingredient-info-slice';
+import { userSlice } from '@services/user-slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { feedSlice } from '@services/feed-slice';
 import {
 	websocketSlice,
-	WebsocketStore,
 	wsClose,
 	wsConnecting,
 	wsError,
 	wsMessage,
 	wsOpen,
 } from '@services/websocket-slice';
-import { socketMiddleware } from '@services/middleware';
-import { wsConnect, wsConnectProfile, wsDisconnect } from '@services/actions';
-import { AppDispatch, AppStore, RootState } from '@services/types';
+import { socketMiddleware } from '@services/middlewares/socket-middleware';
+import {
+	wsConnect,
+	wsConnectProfile,
+	wsDisconnect,
+} from '@services/actions/websocket-actions';
 
 const rootReducer = combineSlices(
 	ingredientsSlice,
@@ -35,17 +31,7 @@ const rootReducer = combineSlices(
 	websocketSlice
 );
 
-export interface IStore {
-	ingredients: IIngredientsState;
-	ingredientInfo: IIngredientInfoState;
-	burger: IBurgerState;
-	order: IOrderState;
-	user: IUserState;
-	feed: FeedState;
-	websocket: WebsocketStore;
-}
-
-const liveTableMiddleware = socketMiddleware({
+const feedMiddleware = socketMiddleware({
 	connect: wsConnect,
 	disconnect: wsDisconnect,
 	onConnecting: wsConnecting,
@@ -55,31 +41,35 @@ const liveTableMiddleware = socketMiddleware({
 	onMessage: wsMessage,
 });
 
-const liveTableMiddlewareProfile = socketMiddleware({
-	connect: wsConnectProfile,
-	disconnect: wsDisconnect,
-	onConnecting: wsConnecting,
-	onOpen: wsOpen,
-	onClose: wsClose,
-	onError: wsError,
-	onMessage: wsMessage,
-});
+const feedMiddlewareProfile = socketMiddleware(
+	{
+		connect: wsConnectProfile,
+		disconnect: wsDisconnect,
+		onConnecting: wsConnecting,
+		onOpen: wsOpen,
+		onClose: wsClose,
+		onError: wsError,
+		onMessage: wsMessage,
+	},
+	true
+);
 
-const store: any = configureStore({
+const store = configureStore({
 	reducer: rootReducer,
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
 			serializableCheck: false,
-		}).concat(liveTableMiddleware, liveTableMiddlewareProfile),
+		}).concat(feedMiddleware, feedMiddlewareProfile),
 	devTools: true,
 });
 
-// @ts-ignore
 export default store;
+
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppDispatch = typeof store.dispatch;
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppSelector = useSelector.withTypes<RootState>();
-export const useAppStore = useStore.withTypes<AppStore>();
 
 export { ingredientsSlice, getIngredientsQuery } from './ingredients-slice';
 export {
