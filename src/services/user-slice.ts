@@ -81,9 +81,9 @@ const modifyUser = createAsyncThunk<IUserInfoResponse, TModifyRequestData>(
 
 const logoutUser = createAsyncThunk<IResponseBase>(
 	'user/logoutUser',
-	async () => {
+	async (): Promise<IResponseBase> => {
 		const token = getCookie('refreshToken');
-		return await logout(token ?? '');
+		return (await logout(token ?? '')) as IResponseBase;
 	}
 );
 
@@ -158,6 +158,6 @@ const userSlice = createSlice({
 			}
 		);
 	},
-} as CreateSliceOptions<unknown, SliceCaseReducers<unknown>, string, string, SliceSelectors<unknown>>);
+} as CreateSliceOptions<IUserState, SliceCaseReducers<IUserState>, 'user', 'user', SliceSelectors<IUserState>>);
 
 export { loginUser, logoutUser, registerUser, setUser, modifyUser, userSlice };

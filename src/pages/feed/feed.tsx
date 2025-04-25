@@ -31,7 +31,7 @@ const Feed = (): React.JSX.Element => {
 			dispatch(wsClearOrders());
 			dispatch(wsDisconnect());
 		};
-	}, [dispatch]);
+	}, []);
 
 	useEffect(() => {
 		setStatuses((prevState) => ++prevState);

@@ -10,14 +10,14 @@ import Modal from '../modal';
 import { SyntheticEvent, useCallback, useState } from 'react';
 import { useDrop } from "react-dnd";
 import { addIngredient, sendOrderInfo, flushState } from '@services/index';
-import { UnknownAction } from 'redux';
 import { setUser } from '@services/user-slice';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '@services/index';
 import Bun, { ElementPlaceHolder } from './components/bun';
 import { IIngredientData } from '../../types';
 import { IngredientWithKey } from '@services/burger-constructor-slice';
-import { AnyAction } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
+import { IUserInfoResponse } from '../../api/types';
 
 interface IDragObject {
 	dataId: string;
@@ -54,7 +54,9 @@ const BurgerConstructor = (): React.JSX.Element => {
 
 	const createOrder = useCallback(async (e: SyntheticEvent): Promise<void> => {
 		e.stopPropagation();
-		const user = await dispatch(setUser() as unknown as AnyAction);
+		const user = await dispatch(
+			setUser()
+		) as PayloadAction<IUserInfoResponse>;
 		if(!user?.payload?.success) {
 			navigate('/login');
 			return
@@ -62,7 +64,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 		showOrderModal();
 		dispatch(sendOrderInfo({
 			ingredients: [bun?._id, ...burgerList.map(({ _id }: IngredientWithKey) => _id), bun?._id].filter(el => el) as string[]
-		}) as unknown as UnknownAction)
+		}))
 	}, [bun, burgerList]);
 
 	const closeOrderModal = (): void => {

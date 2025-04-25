@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import AppHeader from '../app-header';
 import { Provider } from 'react-redux';
-import { AnyAction } from '@reduxjs/toolkit';
 import store, { getIngredientsQuery, useAppDispatch } from '@services/index';
 import {
 	BrowserRouter as Router,
@@ -32,8 +31,8 @@ const App = (): React.JSX.Element => {
 	const background = location.state && location.state.background;
 
 	useEffect(() => {
-		dispatch(setUser() as unknown as AnyAction);
-		dispatch(getIngredientsQuery() as unknown as AnyAction);
+		dispatch(setUser());
+		dispatch(getIngredientsQuery());
 	}, [dispatch]);
 
 	const closeIngredientDetailsModal = () => {

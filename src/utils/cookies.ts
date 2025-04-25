@@ -66,4 +66,9 @@ const getToken = async () => {
 	return token;
 };
 
-export { setCookie, getCookie, deleteCookie, getToken };
+const getWebsocketToken = async () => {
+	const token = await getToken();
+	return token ? token.replace('Bearer ', '') : undefined;
+};
+
+export { setCookie, getCookie, deleteCookie, getToken, getWebsocketToken };

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ISocketOrdersData } from '../types';
 
-enum WebsocketStatus {
+export enum WebsocketStatus {
 	CONNECTING = 'CONNECTING...',
 	ONLINE = 'ONLINE',
 	OFFLINE = 'OFFLINE',

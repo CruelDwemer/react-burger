@@ -1,19 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './styles.module.scss';
-import { useParams, useLocation } from 'react-router-dom';
-import { useAppSelector, useAppDispatch, RootState } from '@services/index';
+import { useLocation, useParams } from 'react-router-dom';
+import { RootState, useAppDispatch, useAppSelector } from '@services/index';
 import { getUpdatedOrders } from '@services/feed-slice';
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import type {
+	ICountedIngredient,
 	IFeedUpdatedOrder,
 	IIngredientWithUUID,
 	IOrdersData,
-	ICountedIngredient,
 } from '../../types';
 import { wsConnect, wsDisconnect } from '@services/actions/websocket-actions';
-import { getStatus, getOrders } from '@services/websocket-slice';
+import {
+	getOrders,
+	getStatus,
+	WebsocketStatus,
+} from '@services/websocket-slice';
 import { updateOrdersData } from '@utils/feedUtils';
 import { SOCKET_URL } from '@utils/constants';
+import { getWebsocketToken } from '@utils/cookies';
 
 const OrderInfo = (): React.JSX.Element => {
 	const [order, setOrder] = useState<IFeedUpdatedOrder>();
@@ -85,7 +90,7 @@ const OrderInfo = (): React.JSX.Element => {
 	}, [socketOrders, ingredientsList, params.id]);
 
 	useEffect(() => {
-		const handleState = (data: IOrdersData | null) => {
+		const handleState = async (data: IOrdersData | null) => {
 			if (location.state?.background && data !== null) {
 				const order = data.orders.find(
 					(item) => item.number === Number(params.id)
@@ -95,16 +100,20 @@ const OrderInfo = (): React.JSX.Element => {
 					setStatus(order.status);
 				}
 			} else if (!location.state) {
+				if (location.pathname.includes('/profile/orders/')) {
+					const accessToken = await getWebsocketToken();
+					dispatch(wsConnect(`${SOCKET_URL}?token=${accessToken}`));
+				}
 				dispatch(wsConnect(`${SOCKET_URL}/all`));
 			}
 		};
 		handleState(updatedOrdersData);
 		return () => {
-			if (socketStatus === 'ONLINE') {
+			if (socketStatus === WebsocketStatus.ONLINE) {
 				dispatch(wsDisconnect());
 			}
 		};
-	}, [dispatch, location.state, params.id, socketStatus, updatedOrdersData]);
+	}, []);
 
 	useEffect(() => {
 		if (order) {
@@ -119,39 +128,41 @@ const OrderInfo = (): React.JSX.Element => {
 	}, [countedIngredients]);
 
 	return (
-		<div
-			className={styles.container}
-			style={location.state?.background ? {} : { marginTop: '80px' }}>
-			<p className={styles.orderId}>{`#${order?.number}`}</p>
-			<p className='text text_type_main-medium mb-3'>{order?.name}</p>
-			<p
-				className='text text_type_main-small mb-15 '
-				style={status === 'done' ? { color: 'rgba(0, 204, 204, 1)' } : {}}>
-				{status === 'done'
-					? 'Выполнен'
-					: status === 'pending'
-					? 'Готовится'
-					: 'Создан'}
-			</p>
-			<p className='text text_type_main-medium mb-6'>Состав:</p>
-			<div className={styles.ingredients}>
-				{countedIngredients.map((ingredient) => (
-					<Ingredient
-						key={ingredient._id}
-						image={ingredient.image}
-						name={ingredient.name}
-						count={ingredient.count}
-						price={ingredient.price}
-					/>
-				))}
-			</div>
-			<div className={styles.footer}>
-				<p className='text text_type_main-default text_color_inactive'>
-					{order?.date}
+		<div className={styles.main}>
+			<div
+				className={styles.container}
+				style={location.state?.background ? {} : { marginTop: '80px' }}>
+				<p className={styles.orderId}>{`#${order?.number}`}</p>
+				<p className='text text_type_main-medium mb-3'>{order?.name}</p>
+				<p
+					className='text text_type_main-small mb-15 '
+					style={status === 'done' ? { color: 'rgba(0, 204, 204, 1)' } : {}}>
+					{status === 'done'
+						? 'Выполнен'
+						: status === 'pending'
+						? 'Готовится'
+						: 'Создан'}
 				</p>
-				<div className={styles.price}>
-					<p className='text text_type_digits-default mr-2'>{totalPrice}</p>
-					<CurrencyIcon type='primary' />
+				<p className='text text_type_main-medium mb-6'>Состав:</p>
+				<div className={styles.ingredients}>
+					{countedIngredients.map((ingredient) => (
+						<Ingredient
+							key={ingredient._id}
+							image={ingredient.image}
+							name={ingredient.name}
+							count={ingredient.count}
+							price={ingredient.price}
+						/>
+					))}
+				</div>
+				<div className={styles.footer}>
+					<p className='text text_type_main-default text_color_inactive'>
+						{order?.date}
+					</p>
+					<div className={styles.price}>
+						<p className='text text_type_digits-default mr-2'>{totalPrice}</p>
+						<CurrencyIcon type='primary' />
+					</div>
 				</div>
 			</div>
 		</div>

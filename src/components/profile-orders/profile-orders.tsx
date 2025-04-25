@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styles from './styles.module.scss';
 import { useAppSelector, useAppDispatch, RootState } from '@services/index';
-import { getToken } from '@utils/cookies';
+import { getWebsocketToken } from '@utils/cookies';
 import { wsConnect, wsDisconnect } from '@services/actions/websocket-actions';
 import { getOrders, getStatus, wsClearOrders } from '@services/websocket-slice';
 import { IFeedUpdatedOrder } from '../../types';
@@ -28,8 +28,7 @@ const ProfileOrders = () => {
 	const socketStatus = useAppSelector(getStatus);
 
 	const getAccessToken = async () => {
-		const token = await getToken();
-		const tokenValue = token ? token.replace('Bearer ', '') : undefined;
+		const tokenValue = await getWebsocketToken();
 		setAccessToken(tokenValue);
 	};
 

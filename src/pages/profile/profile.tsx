@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react';
 import styles from './styles.module.scss';
 import { logoutUser } from '@services/user-slice';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { AnyAction } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
 import { useAppDispatch } from '@services/index';
 import ProfileForm from '../../components/profile-form';
 import ProfileOrders from '../../components/profile-orders';
+import { IResponseBase } from '../../api/types';
 
 const Profile = (): React.JSX.Element => {
 	const [ordersModal, setOrdersModal] = useState(false);
@@ -16,7 +17,9 @@ const Profile = (): React.JSX.Element => {
 	const location = useLocation();
 
 	const handleLogout = async (): Promise<void> => {
-		const result = await dispatch(logoutUser() as unknown as AnyAction);
+		const result = (await dispatch(
+			logoutUser()
+		)) as PayloadAction<IResponseBase>;
 		if (result.payload?.success) {
 			navigate('/login');
 		}

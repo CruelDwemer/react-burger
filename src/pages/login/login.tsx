@@ -8,9 +8,10 @@ import {
 import styles from './styles.module.scss';
 import { loginUser, setUser } from '@services/user-slice';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { AnyAction } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
 import useForm from '../../hooks/useForm';
 import { useAppDispatch } from '@services/index';
+import { ILoginResponse, IUserInfoResponse } from '../../api/types';
 
 interface ILoginForm {
 	email: string;
@@ -32,9 +33,13 @@ const LoginPage = (): React.JSX.Element => {
 		e: React.FormEvent<HTMLFormElement>
 	): Promise<void> => {
 		e.preventDefault();
-		const result = await dispatch(loginUser(form) as unknown as AnyAction);
+		const result = (await dispatch(
+			loginUser(form)
+		)) as PayloadAction<ILoginResponse>;
 		if (result.payload?.success) {
-			const userSet = await dispatch(setUser() as unknown as AnyAction);
+			const userSet = (await dispatch(
+				setUser()
+			)) as PayloadAction<IUserInfoResponse>;
 			if (userSet.payload?.success) {
 				navigate(from, { replace: true });
 			}
