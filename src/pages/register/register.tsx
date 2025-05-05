@@ -9,9 +9,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from './styles.module.scss';
 import * as React from 'react';
 import { registerUser } from '@services/user-slice';
-import { AnyAction } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
 import useForm from '../../hooks/useForm';
 import { useAppDispatch } from '@services/index';
+import { IUserInfoResponse } from '../../api/types';
 
 interface IRegisterForm {
 	name: string;
@@ -32,7 +33,9 @@ const RegisterPage = (): React.JSX.Element => {
 		e: React.FormEvent<HTMLFormElement>
 	): Promise<void> => {
 		e.preventDefault();
-		const result = await dispatch(registerUser(form) as unknown as AnyAction);
+		const result = (await dispatch(
+			registerUser(form)
+		)) as PayloadAction<IUserInfoResponse>;
 		if (result.payload?.success) {
 			navigate('/login');
 		}

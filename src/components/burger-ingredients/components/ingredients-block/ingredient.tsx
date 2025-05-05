@@ -43,7 +43,9 @@ const Ingredient = ({
 			count = 2;
 		}
 	} else {
-		count = burgerList.filter(({ _id: id }) => id === _id).length;
+		count = burgerList.filter(
+			({ _id: id }: IIngredientData) => id === _id
+		).length;
 	}
 
 	return (

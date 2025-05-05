@@ -1,0 +1,74 @@
+.container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.columnLeft {
+	display: flex;
+	flex-direction: column;
+	width: 608px;
+	max-height: 800px;
+	margin-right: 60px;
+	overflow-y: scroll;
+	scrollbar-color: #8585AD #2F2F37;
+	scrollbar-width: thin;
+}
+
+.title {
+	composes: text text_type_main-large from global;
+	margin-top: 40px;
+	margin-bottom: 20px;
+	margin-left: 150px;
+}
+
+.ordersFeed {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 16px;
+	width: 584px;
+}
+
+.columnRight {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	width: 580px;
+}
+
+.orderStatus {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.ready {
+	width: 272px;
+}
+
+.ordersReady p {
+	color: rgba(0, 204, 204, 1);
+}
+
+.ordersWorking {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 2px;
+}
+
+.ordersReady {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 2px;
+}
+
+.working {
+	width: 272px;
+}
+
+.digits {
+	composes: text text_type_digits-large from global;
+	text-shadow: 0 4px 32px rgba(51, 51, 255, 0.5);
+}

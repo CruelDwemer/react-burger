@@ -9,14 +9,15 @@ import OrderDetails from './components/order-details';
 import Modal from '../modal';
 import { SyntheticEvent, useCallback, useState } from 'react';
 import { useDrop } from "react-dnd";
-import { addIngredient, IStore, sendOrderInfo, flushState } from '@services/index';
-import { UnknownAction } from 'redux';
+import { addIngredient, sendOrderInfo, flushState } from '@services/index';
 import { setUser } from '@services/user-slice';
 import { useNavigate } from 'react-router-dom';
-import { AnyAction } from '@reduxjs/toolkit';
 import { useAppSelector, useAppDispatch } from '@services/index';
 import Bun, { ElementPlaceHolder } from './components/bun';
 import { IIngredientData } from '../../types';
+import { IngredientWithKey } from '@services/burger-constructor-slice';
+import { PayloadAction } from '@reduxjs/toolkit';
+import { IUserInfoResponse } from '../../api/types';
 
 interface IDragObject {
 	dataId: string;
@@ -47,21 +48,23 @@ const BurgerConstructor = (): React.JSX.Element => {
 	const showOrderModal = setOpenOrderModal.bind(null, true);
 	const hideOrderModal = setOpenOrderModal.bind(null, false);
 
-	const totalCost: number = burgerList.reduce((acc, item) => (
+	const totalCost: number = burgerList.reduce((acc: number, item: IngredientWithKey) => (
 		acc + item.price
 	), bun?.price ? bun.price * 2 : 0);
 
 	const createOrder = useCallback(async (e: SyntheticEvent): Promise<void> => {
 		e.stopPropagation();
-		const user = await dispatch(setUser() as unknown as AnyAction);
-		if(!user.payload?.success) {
+		const user = await dispatch(
+			setUser()
+		) as PayloadAction<IUserInfoResponse>;
+		if(!user?.payload?.success) {
 			navigate('/login');
 			return
 		}
 		showOrderModal();
 		dispatch(sendOrderInfo({
-			ingredients: [bun?._id, ...burgerList.map(({ _id }) => _id), bun?._id].filter(el => el) as string[]
-		}) as unknown as UnknownAction)
+			ingredients: [bun?._id, ...burgerList.map(({ _id }: IngredientWithKey) => _id), bun?._id].filter(el => el) as string[]
+		}))
 	}, [bun, burgerList]);
 
 	const closeOrderModal = (): void => {
@@ -75,7 +78,6 @@ const BurgerConstructor = (): React.JSX.Element => {
 		<section className={styles.container} ref={dropTarget}>
 			{
 				openOrderModal &&
-				orderId &&
 				<Modal closeModal={closeOrderModal}>
 					<OrderDetails orderId={orderId} />
 				</Modal>
@@ -85,7 +87,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 			</div>
 			<ul className={styles.items}>
 				{burgerList.length ?
-					burgerList.map((item, index) => (
+					burgerList.map((item: IngredientWithKey, index: number) => (
 						<BurgerConstructorItem
 							index={index}
 							text={item.name}

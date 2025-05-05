@@ -2,8 +2,7 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import AppHeader from '../app-header';
 import { Provider } from 'react-redux';
-import { AnyAction, Store, Action } from '@reduxjs/toolkit';
-import store, { getIngredientsQuery, IStore, useAppDispatch } from '@services/index';
+import store, { getIngredientsQuery, useAppDispatch } from '@services/index';
 import {
 	BrowserRouter as Router,
 	Routes,
@@ -22,6 +21,8 @@ import Modal from '../modal';
 import IngredientDetails from '../burger-ingredients/components/ingredient-details';
 import { setUser } from '@services/user-slice';
 import { OnlyAuth, OnlyUnAuth } from '../protected';
+import Feed from '@pages/feed';
+import OrderInfo from '../order-info';
 
 const App = (): React.JSX.Element => {
 	const dispatch = useAppDispatch();
@@ -30,8 +31,8 @@ const App = (): React.JSX.Element => {
 	const background = location.state && location.state.background;
 
 	useEffect(() => {
-		dispatch(setUser() as unknown as AnyAction);
-		dispatch(getIngredientsQuery() as unknown as AnyAction);
+		dispatch(setUser());
+		dispatch(getIngredientsQuery());
 	}, [dispatch]);
 
 	const closeIngredientDetailsModal = () => {
@@ -58,6 +59,11 @@ const App = (): React.JSX.Element => {
 				/>
 				<Route path='/profile' element={<OnlyAuth Component={Profile} />} />
 				<Route
+					path='/profile/orders'
+					element={<OnlyAuth Component={Profile} />}
+				/>
+				<Route path='/profile/orders/:id' element={<OrderInfo />} />
+				<Route
 					path='/ingredients/:id'
 					element={
 						<IngredientPage>
@@ -65,6 +71,8 @@ const App = (): React.JSX.Element => {
 						</IngredientPage>
 					}
 				/>
+				<Route path='/feed' Component={Feed} />
+				<Route path='/feed/:id' Component={OrderInfo} />
 			</Routes>
 			{background && (
 				<Routes>
@@ -76,6 +84,22 @@ const App = (): React.JSX.Element => {
 							</Modal>
 						}
 					/>
+					<Route
+						path='/feed/:id'
+						element={
+							<Modal closeModal={closeIngredientDetailsModal}>
+								<OrderInfo />
+							</Modal>
+						}
+					/>
+					<Route
+						path='/profile/orders/:id'
+						element={
+							<Modal closeModal={closeIngredientDetailsModal}>
+								<OrderInfo />
+							</Modal>
+						}
+					/>
 				</Routes>
 			)}
 		</>
@@ -83,7 +107,7 @@ const App = (): React.JSX.Element => {
 };
 
 const AppWithProvider = (): React.JSX.Element => (
-	<Provider store={store as unknown as Store<IStore, Action<string>>}>
+	<Provider store={store}>
 		<Router>
 			<App />
 		</Router>

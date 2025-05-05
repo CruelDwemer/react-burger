@@ -1,3 +1,5 @@
+import { refreshToken } from '../api/user';
+
 type TSetCookieProps = {
 	path?: string;
 	expires?: number | string;
@@ -46,4 +48,27 @@ const deleteCookie = (name: string): void => {
 	setCookie(name, '', { expires: -1 });
 };
 
-export { setCookie, getCookie, deleteCookie };
+const getToken = async () => {
+	let token: string | undefined;
+	try {
+		token = getCookie('accessToken');
+		if (!token) {
+			const refreshTokenValue = getCookie('refreshToken') as string;
+			const result = await refreshToken(refreshTokenValue);
+			if (result.success) {
+				token = result.accessToken as string;
+				setCookie('accessToken', token, { path: '/', expires: 1200 });
+			}
+		}
+	} catch (err) {
+		throw new Error(`Error: ${err}`);
+	}
+	return token;
+};
+
+const getWebsocketToken = async () => {
+	const token = await getToken();
+	return token ? token.replace('Bearer ', '') : undefined;
+};
+
+export { setCookie, getCookie, deleteCookie, getToken, getWebsocketToken };
