@@ -77,17 +77,22 @@ const OrderInfo = (): React.JSX.Element => {
 	};
 
 	useEffect(() => {
+		if (order && params.id && +order.number === +params.id) {
+			return;
+		}
+
 		if (socketOrders && socketOrders.success && ingredientsList.length > 0) {
 			const updatedData = updateOrdersData(socketOrders, ingredientsList);
-			const order = updatedData.orders.find(
+			const target = updatedData.orders.find(
 				(item) => item.number === Number(params.id)
 			);
-			setOrder(order as IFeedUpdatedOrder);
-			if (order) {
-				setStatus(order.status);
+
+			if (target) {
+				setOrder(target as IFeedUpdatedOrder);
+				setStatus(target.status);
 			}
 		}
-	}, [socketOrders, ingredientsList, params.id]);
+	}, [socketOrders, ingredientsList]);
 
 	useEffect(() => {
 		const handleState = async (data: IOrdersData | null) => {
@@ -113,7 +118,7 @@ const OrderInfo = (): React.JSX.Element => {
 				dispatch(wsDisconnect());
 			}
 		};
-	}, []);
+	}, [updatedOrdersData]);
 
 	useEffect(() => {
 		if (order) {
