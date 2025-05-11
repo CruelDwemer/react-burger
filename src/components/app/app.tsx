@@ -4,7 +4,7 @@ import AppHeader from '../app-header';
 import { Provider } from 'react-redux';
 import store, { getIngredientsQuery, useAppDispatch } from '@services/index';
 import {
-	BrowserRouter as Router,
+	HashRouter as Router,
 	Routes,
 	Route,
 	useNavigate,
