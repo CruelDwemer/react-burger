@@ -75,7 +75,7 @@ const BurgerConstructor = (): React.JSX.Element => {
 	const orderId: number | undefined = orderInfo?.number;
 
 	return (
-		<section className={styles.container} ref={dropTarget}>
+		<section className={styles.container} ref={dropTarget} data-test-id='drop-container'>
 			{
 				openOrderModal &&
 				<Modal closeModal={closeOrderModal}>

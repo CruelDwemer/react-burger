@@ -54,8 +54,7 @@ const Ingredient = ({
 			{!!count && (
 				<Counter count={count} size='default' extraClass={styles.counter} />
 			)}
-
-			<img src={image} alt={name} className={styles.image} ref={dragRef} />
+			<img src={image} alt={name} className={styles.image} ref={dragRef} data-test-id='drag-element'/>
 			<div className={styles.priceData}>
 				<p className={styles.text}>{price}</p>
 				<CurrencyIcon type='primary' />
