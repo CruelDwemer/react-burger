@@ -1,4 +1,4 @@
-import { ICountedIngredient, IFeedOrder, IFeedUpdatedOrder } from '../types';
+import { IIngredientData, IFeedOrder, IFeedUpdatedOrder } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
 type TData = {
@@ -10,17 +10,17 @@ type TData = {
 
 const updateOrdersData = (
 	data: TData,
-	ingredientsList: Array<ICountedIngredient>
+	ingredientsList: Array<IIngredientData>
 ) => {
 	const { orders } = data;
 	const updatedOrders = orders.map((order: IFeedOrder) => {
 		const updatedIngredients = order.ingredients.map((ingredient: string) => {
 			return ingredientsList.find(
-				(el: ICountedIngredient) => el._id === ingredient
+				(el: IIngredientData) => el._id === ingredient
 			);
 		});
 		const price = updatedIngredients.reduce(
-			(acc: number, ingredient: ICountedIngredient | undefined): number => {
+			(acc: number, ingredient: IIngredientData | undefined): number => {
 				if (ingredient?.price) {
 					return acc + ingredient.price;
 				}
@@ -60,8 +60,6 @@ const getDateInfo = (dateString: string) => {
 		hour12: false,
 	};
 	const time = givenDate.toLocaleTimeString([], options);
-
-
 	const currentDate = new Date();
 	const differenceInMilliseconds = currentDate.getTime() - givenDate.getTime();
 	const millisecondsInADay = 1000 * 60 * 60 * 24;

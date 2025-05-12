@@ -94,7 +94,7 @@ export interface IUserState {
 	loaded: boolean;
 }
 
-const initialState: IUserState = {
+export const initialState: IUserState = {
 	user: null,
 	isAuth: false,
 	isAuthChecked: false,
