@@ -22,7 +22,7 @@ export interface IOrderState {
 	orderInfo: ISendOrderResponseData['order'] | null;
 }
 
-const initialState: IOrderState = {
+export const initialState: IOrderState = {
 	orderInfo: null,
 };
 

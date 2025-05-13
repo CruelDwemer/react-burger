@@ -12,7 +12,7 @@ export interface IBurgerState {
 	bun: IIngredientData | null;
 }
 
-const initialState: IBurgerState = {
+export const initialState: IBurgerState = {
 	burgerList: [],
 	bun: null,
 };

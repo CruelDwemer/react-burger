@@ -8,6 +8,7 @@ export default {
 		'^@components/(.*)$': '<rootDir>/src/components/$1',
 		'^@services/(.*)$': '<rootDir>/src/services/$1',
 		'^@utils/(.*)$': '<rootDir>/src/utils/$1',
+		'^@hooks/(.*)$': '<rootDir>/src/hooks/$1',
 	},
 	globals: {
 		fetch: global.fetch,

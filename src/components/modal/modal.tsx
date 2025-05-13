@@ -29,8 +29,8 @@ const Modal = ({ closeModal, children }: IModalProps) => {
 	// eslint-disable-next-line import/no-named-as-default-member
 	return ReactDOM.createPortal(
 		<ModalOverlay closeModal={closeModal}>
-			<section className={styles.modal}>
-				<button className={styles.close} onClick={handleCloseButton}>
+			<section className={styles.modal} data-test-id='modal'>
+				<button className={styles.close} onClick={handleCloseButton} data-test-id="close-modal">
 					<CloseIcon type='primary' />
 				</button>
 				{children}

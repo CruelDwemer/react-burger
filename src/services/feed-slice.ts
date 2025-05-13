@@ -6,7 +6,7 @@ export type FeedState = {
 	personalOrdersData: IOrdersData | null;
 };
 
-const initialState: FeedState = {
+export const initialState: FeedState = {
 	ordersData: null,
 	personalOrdersData: null,
 };
